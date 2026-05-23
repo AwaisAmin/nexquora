@@ -1,26 +1,139 @@
 @import "tailwindcss";
 
+/* ── Brand CSS variables ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary:    #050810;
+  --bg-secondary:  #0A0F1E;
+  --bg-card:       #0D1529;
+  --accent-cyan:   #00F5FF;
+  --accent-gold:   #FFB800;
+  --accent-purple: #7C3AED;
+  --accent-blue:   #3B82F6;
+  --accent-green:  #10B981;
+  --accent-amber:  #F59E0B;
+  --text-primary:  #FFFFFF;
+  --text-muted:    #8892A4;
+  --border:        rgba(255, 255, 255, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Keyframes (defined outside @theme for broad compatibility) ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 24px rgba(0, 245, 255, 0.3); }
+  50%       { box-shadow: 0 0 40px rgba(0, 245, 255, 0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-20px); }
+}
+
+/* ── Tailwind v4 theme tokens ── */
+@theme {
+  /* fonts — values resolved by next/font CSS variables set on <html> */
+  --font-syne:    var(--font-syne);
+  --font-dm-sans: var(--font-dm-sans);
+
+  /* brand palette → bg-cyan, text-gold, border-purple, etc. */
+  --color-bg-primary:   #050810;
+  --color-bg-secondary: #0A0F1E;
+  --color-bg-card:      #0D1529;
+  --color-cyan:         #00F5FF;
+  --color-gold:         #FFB800;
+  --color-purple:       #7C3AED;
+  --color-blue:         #3B82F6;
+  --color-green:        #10B981;
+  --color-amber:        #F59E0B;
+  --color-muted:        #8892A4;
+
+  /* animation utilities → animate-marquee, animate-float, etc. */
+  --animate-marquee:         marquee 30s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 25s linear infinite;
+  --animate-pulse-glow:      pulse-glow 2s ease-in-out infinite;
+  --animate-float:           float 6s ease-in-out infinite;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans, Arial, Helvetica, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Reusable utility classes ── */
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(13, 21, 41, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+
+/* Cyan→Blue gradient text */
+.gradient-text {
+  background: linear-gradient(to right, #00F5FF, #3B82F6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Gold→Amber gradient text (finance pages) */
+.gradient-text-gold {
+  background: linear-gradient(to right, #FFB800, #F59E0B);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Subtle 80px CSS grid background texture */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Glow utilities */
+.glow-cyan   { box-shadow: 0 0 24px rgba(0, 245, 255, 0.3); }
+.glow-gold   { box-shadow: 0 0 24px rgba(255, 184, 0, 0.3); }
+.glow-purple { box-shadow: 0 0 24px rgba(124, 58, 237, 0.3); }
+.glow-blue   { box-shadow: 0 0 24px rgba(59, 130, 246, 0.3); }
+.glow-green  { box-shadow: 0 0 24px rgba(16, 185, 129, 0.3); }
+.glow-amber  { box-shadow: 0 0 24px rgba(245, 158, 11, 0.3); }
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 245, 255, 0.35); }
+
+/* ── Text selection ── */
+::selection {
+  background: rgba(0, 245, 255, 0.18);
+  color: #ffffff;
+}
+
+/* ── Accessible focus ring (overrides Tailwind's outline-none on inputs) ── */
+*:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
 }
