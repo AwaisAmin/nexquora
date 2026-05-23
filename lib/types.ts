@@ -1,6 +1,42 @@
 // ── Shared domain types ──────────────────────────────────────────────────────
 // Single source of truth imported by data files, API routes, and components.
 
+export interface Stat {
+  value: string
+  label: string
+}
+
+export interface CulturePillar {
+  label: string
+  desc: string
+}
+
+export interface TeamMember {
+  initials: string
+  role: string
+}
+
+export interface CompanyValue {
+  iconName: string
+  title: string
+  description: string
+}
+
+export interface ProcessStep {
+  step: string
+  iconName: string
+  title: string
+  description: string
+  accentHex: string
+}
+
+export interface ComparisonRow {
+  service: string
+  bestFor: string
+  timeline: string
+  budget: string
+}
+
 export type AccentColor = 'cyan' | 'blue' | 'purple' | 'green' | 'gold' | 'amber'
 
 export type ServiceId =

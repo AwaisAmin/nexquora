@@ -1,8 +1,9 @@
 /**
- * Site-wide navigation and link constants.
- * All labels, hrefs, and metadata live here — never hardcoded in components.
+ * Site-wide navigation, link, and metric constants.
+ * All labels, hrefs, accents, and stats live here — never hardcoded in components.
  */
 import { ROUTES } from '@/lib/routes'
+import type { Department, Stat } from '@/lib/types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -62,6 +63,25 @@ export const CONTACT_INFO = {
   hours:    'Mon–Fri, 9am–6pm EST',
   location: 'Remote · Global',
 } as const
+
+// ── Homepage stats ────────────────────────────────────────────────────────────
+
+export const STATS: Stat[] = [
+  { value: '50+',  label: 'Projects delivered' },
+  { value: '6',    label: 'Service practices' },
+  { value: '3+',   label: 'Years building' },
+  { value: '100%', label: 'Remote-first team' },
+]
+
+// ── Department accent colours (mirrors service accentHex) ─────────────────────
+
+export const DEPT_ACCENT: Record<Department, string> = {
+  AI:      '#00F5FF',
+  Web:     '#3B82F6',
+  Mobile:  '#7C3AED',
+  DevOps:  '#10B981',
+  Finance: '#FFB800',
+}
 
 // ── Brand ─────────────────────────────────────────────────────────────────────
 

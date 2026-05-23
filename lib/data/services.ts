@@ -1,7 +1,7 @@
 // TODO: Replace static array with CMS API call (Sanity / Contentful)
 // Swap point: fetch from /api/services instead of importing directly.
 
-import type { Service } from '@/lib/types'
+import type { Service, ComparisonRow } from '@/lib/types'
 
 export const SERVICES: Service[] = [
   {
@@ -159,3 +159,12 @@ export function getServicesBySlug(slug: string): Service[] {
 export function getServiceById(id: string): Service | undefined {
   return SERVICES.find((s) => s.id === id)
 }
+
+export const SERVICE_COMPARISON: ComparisonRow[] = [
+  { service: 'AI & Machine Learning', bestFor: 'Automation, chatbots, data products', timeline: '6–12 weeks',  budget: '$25k+' },
+  { service: 'Web Development',       bestFor: 'SaaS, portals, marketing sites',      timeline: '4–10 weeks',  budget: '$15k+' },
+  { service: 'Mobile Apps',           bestFor: 'iOS & Android consumer/B2B apps',     timeline: '8–16 weeks',  budget: '$20k+' },
+  { service: 'DevOps & Cloud',        bestFor: 'Infrastructure, CI/CD, scaling',       timeline: '2–6 weeks',   budget: '$8k+' },
+  { service: 'Fintech Solutions',     bestFor: 'Payments, compliance, dashboards',     timeline: '8–20 weeks',  budget: '$30k+' },
+  { service: 'Bookkeeping & Payroll', bestFor: 'SMBs, startups, distributed teams',   timeline: 'Ongoing',     budget: '$500/mo+' },
+]
