@@ -37,6 +37,20 @@ export interface ComparisonRow {
   budget: string
 }
 
+export interface FaqItem {
+  q: string
+  a: string
+}
+
+export interface PricingPlan {
+  name: string
+  price: string
+  period: string
+  description: string
+  features: string[]
+  highlighted?: boolean
+}
+
 export type AccentColor = 'cyan' | 'blue' | 'purple' | 'green' | 'gold' | 'amber'
 
 export type ServiceId =
@@ -67,6 +81,7 @@ export type Service = {
   /** Tech/tool names shown as small badges */
   tools: string[]
   caseStudyTeaser?: string
+  faq: FaqItem[]
 }
 
 export type Department = 'AI' | 'Web' | 'Mobile' | 'DevOps' | 'Finance'

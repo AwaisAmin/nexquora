@@ -1,7 +1,7 @@
 // TODO: Replace static array with CMS API call (Sanity / Contentful)
 // Swap point: fetch from /api/services instead of importing directly.
 
-import type { Service, ComparisonRow } from '@/lib/types'
+import type { Service, ComparisonRow, PricingPlan } from '@/lib/types'
 
 export const SERVICES: Service[] = [
   {
@@ -27,6 +27,24 @@ export const SERVICES: Service[] = [
     ],
     tools: ['OpenAI', 'Anthropic', 'HuggingFace', 'LangChain', 'Python', 'FastAPI', 'Pinecone', 'Weaviate'],
     caseStudyTeaser: 'Built an AI recruitment platform that reduced time-to-hire by 60%.',
+    faq: [
+      {
+        q: 'How long does it take to build an AI product?',
+        a: 'Most AI engagements take 6–12 weeks depending on scope. A focused RAG chatbot can ship in 4 weeks; a full autonomous pipeline with custom model training typically takes 10–16 weeks. We scope precisely before we start.',
+      },
+      {
+        q: 'Do you work with our proprietary data?',
+        a: 'Yes. All training data, embeddings, and fine-tuned models are yours — we sign an NDA before any data sharing. We can work on-premise or in your cloud account if needed.',
+      },
+      {
+        q: 'Will we own the models and code?',
+        a: 'Fully. IP transfers to you at handoff — models, weights, vector stores, and all source code. We retain no rights to anything we build for you.',
+      },
+      {
+        q: 'Can you integrate AI into our existing product?',
+        a: 'That\'s usually the fastest path. We design AI layers to slot into existing systems via API — no full rewrites required unless your architecture genuinely needs it.',
+      },
+    ],
   },
   {
     id: 'web',
@@ -51,6 +69,24 @@ export const SERVICES: Service[] = [
     ],
     tools: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'tRPC', 'Redis'],
     caseStudyTeaser: 'Built a multi-tenant SaaS analytics platform serving 10k+ active users.',
+    faq: [
+      {
+        q: 'Do you build custom designs or use templates?',
+        a: 'All custom. We design from scratch in Figma — or work from your existing designs — before writing a line of code. No templates, no shortcuts.',
+      },
+      {
+        q: 'What tech stack do you default to?',
+        a: 'Next.js + TypeScript + PostgreSQL + Prisma is our standard setup. It scales well, has excellent tooling, and is easy to hand over to your in-house team. We adapt if your requirements call for something different.',
+      },
+      {
+        q: 'Who handles hosting after launch?',
+        a: 'You own everything. We set up Vercel (frontend), Railway or AWS (backend), and Neon or Supabase (database) — all in your accounts. We document the full setup and hand over admin access.',
+      },
+      {
+        q: 'Do you offer ongoing support after launch?',
+        a: 'Yes. We offer monthly retainers for feature development, bug fixes, and infrastructure monitoring. Most clients stay on retainer for at least 3–6 months post-launch.',
+      },
+    ],
   },
   {
     id: 'mobile',
@@ -75,6 +111,24 @@ export const SERVICES: Service[] = [
     ],
     tools: ['React Native', 'Expo', 'TypeScript', 'Firebase', 'Stripe Mobile SDK', 'React Navigation', 'Zustand'],
     caseStudyTeaser: '50k+ active users on a live sports app with real-time match scoring.',
+    faq: [
+      {
+        q: 'Native or cross-platform?',
+        a: 'We default to React Native via Expo — one codebase for iOS and Android, with near-native performance. For apps with very demanding native requirements (AR, heavy graphics, custom hardware) we discuss Flutter or fully native.',
+      },
+      {
+        q: 'What\'s your App Store approval track record?',
+        a: 'We have a 100% first-submission approval rate on the App Store. We know the guidelines and design accordingly — no guesswork at the end of the project.',
+      },
+      {
+        q: 'How do updates work after launch?',
+        a: 'Minor UI and logic changes are deployed over-the-air via Expo EAS — no App Store submission required. Major releases (new features, native module changes) go through the normal review process.',
+      },
+      {
+        q: 'Can you take over an existing React Native app?',
+        a: 'Yes. We do a code audit first — typically 3–5 days — to understand technical debt and identify risks. Then we scope a realistic plan, whether that\'s incremental improvements or a strategic rewrite.',
+      },
+    ],
   },
   {
     id: 'devops',
@@ -99,6 +153,24 @@ export const SERVICES: Service[] = [
     ],
     tools: ['AWS', 'Azure', 'Docker', 'Kubernetes', 'Terraform', 'GitHub Actions', 'Prometheus', 'Datadog'],
     caseStudyTeaser: 'Reduced deployment time from 2 hours to 4 minutes for a Series B startup.',
+    faq: [
+      {
+        q: 'Can you migrate our existing infrastructure?',
+        a: 'Yes — we\'ve handled bare-metal to cloud, single-server to Kubernetes, and multi-cloud consolidations. We do a discovery phase first to map the current state and plan a zero-downtime migration path.',
+      },
+      {
+        q: 'Who responds when something breaks at 3am?',
+        a: 'We set up on-call alerting (PagerDuty or Datadog) with clear runbooks, so your team — or ours on retainer — knows exactly what to do. We don\'t leave you with black-box infrastructure.',
+      },
+      {
+        q: 'Do you work with our existing AWS/Azure setup?',
+        a: 'Absolutely. We adapt to your current cloud provider and tooling. We don\'t force migrations just to standardise on our preferences.',
+      },
+      {
+        q: 'Will we have full access and control?',
+        a: 'Always. You own the accounts, keys, and credentials. We operate with least-privilege access and document everything so you\'re never dependent on us to keep the lights on.',
+      },
+    ],
   },
   {
     id: 'fintech',
@@ -123,6 +195,24 @@ export const SERVICES: Service[] = [
     ],
     tools: ['Stripe', 'Plaid', 'Node.js', 'PostgreSQL', 'Redis', 'TypeScript', 'Python'],
     caseStudyTeaser: 'Built a multi-currency payment system processing $2M+ monthly volume.',
+    faq: [
+      {
+        q: 'How do you handle PCI compliance?',
+        a: 'We follow PCI DSS best practices by default — cardholder data never touches your servers. We use Stripe Elements / Tokenisation to handle sensitive data within their PCI-certified environment.',
+      },
+      {
+        q: 'Which payment processors can you integrate?',
+        a: 'Stripe, Adyen, Braintree, PayPal, and custom payment rails. If your market requires a regional processor, we\'ve worked with them too. We advise on the best fit for your volume, currency mix, and regulatory context.',
+      },
+      {
+        q: 'How do you approach KYC / AML requirements?',
+        a: 'We integrate with identity verification providers (Jumio, Persona, Onfido) for document checks and build the AML screening workflows your compliance team specifies. We\'ve worked with legal counsel on regulated financial products.',
+      },
+      {
+        q: 'How long does a fintech build typically take?',
+        a: 'A focused payment integration takes 4–6 weeks. A full compliance platform with KYC, dashboards, and reporting is typically 12–20 weeks. Scope drives timeline — we\'ll give you a precise estimate after discovery.',
+      },
+    ],
   },
   {
     id: 'bookkeeping',
@@ -147,10 +237,28 @@ export const SERVICES: Service[] = [
     ],
     tools: ['QuickBooks', 'Xero', 'Gusto', 'ADP', 'Stripe', 'Bill.com', 'Google Sheets'],
     caseStudyTeaser: 'Cleaned up 18 months of backlogged books for a Series A fintech startup in 3 weeks.',
+    faq: [
+      {
+        q: 'What accounting software do you use?',
+        a: 'QuickBooks Online and Xero are our primary platforms. We work with whatever you already have and can handle migrations between systems as part of the onboarding.',
+      },
+      {
+        q: 'How quickly can you start?',
+        a: 'Typically within 3 business days. Onboarding involves connecting your bank accounts, reviewing the chart of accounts, and aligning on reporting preferences — most clients are fully live within a week.',
+      },
+      {
+        q: 'Can you handle catch-up bookkeeping?',
+        a: 'Yes, and we do it often. We quote catch-up work as a one-time fee, complete it alongside your ongoing engagement, and deliver clean books going forward.',
+      },
+      {
+        q: 'Do you handle both bookkeeping and payroll?',
+        a: 'Yes. Handling both eliminates the reconciliation friction that happens when you have two separate vendors. Our staff handles payroll runs, tax deposits, and year-end W-2/1099 preparation under one engagement.',
+      },
+    ],
   },
 ]
 
-/** Look up a single service by its URL slug. Returns all matches for 'finance' (two tabs). */
+/** Returns all services matching a URL slug. Finance returns two entries. */
 export function getServicesBySlug(slug: string): Service[] {
   return SERVICES.filter((s) => s.slug === slug)
 }
@@ -167,4 +275,47 @@ export const SERVICE_COMPARISON: ComparisonRow[] = [
   { service: 'DevOps & Cloud',        bestFor: 'Infrastructure, CI/CD, scaling',       timeline: '2–6 weeks',   budget: '$8k+' },
   { service: 'Fintech Solutions',     bestFor: 'Payments, compliance, dashboards',     timeline: '8–20 weeks',  budget: '$30k+' },
   { service: 'Bookkeeping & Payroll', bestFor: 'SMBs, startups, distributed teams',   timeline: 'Ongoing',     budget: '$500/mo+' },
+]
+
+export const BOOKKEEPING_PLANS: PricingPlan[] = [
+  {
+    name: 'Starter',
+    price: '$500',
+    period: '/month',
+    description: 'For early-stage startups with straightforward books.',
+    features: [
+      'Monthly bookkeeping (up to 150 transactions)',
+      'Bank & credit card reconciliation',
+      'Monthly P&L and balance sheet',
+      'Email support (48h response)',
+    ],
+  },
+  {
+    name: 'Growth',
+    price: '$1,200',
+    period: '/month',
+    description: 'For funded startups with payroll and more complexity.',
+    features: [
+      'Monthly bookkeeping (up to 500 transactions)',
+      'Full payroll processing (up to 15 employees)',
+      'AP / AR management',
+      'Quarterly tax estimates',
+      'Dedicated bookkeeper + Slack access',
+    ],
+    highlighted: true,
+  },
+  {
+    name: 'Scale',
+    price: '$2,500',
+    period: '/month',
+    description: 'For scaling companies with multi-entity or multi-currency needs.',
+    features: [
+      'Unlimited transactions',
+      'Full payroll (unlimited employees)',
+      'Multi-entity / multi-currency consolidation',
+      'W-2 & 1099 preparation included',
+      'Monthly CFO review call',
+      'Priority Slack support',
+    ],
+  },
 ]

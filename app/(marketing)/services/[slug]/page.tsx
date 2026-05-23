@@ -3,18 +3,17 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
 import ServiceIcon from '@/components/icons/ServiceIcon'
+import Accordion from '@/components/ui/Accordion'
 import { SERVICES, getServicesBySlug } from '@/lib/data/services'
 import { ROUTES } from '@/lib/routes'
 import { BRAND } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-// ── Static params — pre-render all known service slugs ────────────────────────
 export function generateStaticParams() {
   const slugs = [...new Set(SERVICES.map((s) => s.slug))]
   return slugs.map((slug) => ({ slug }))
 }
 
-// ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
 }: {
@@ -30,7 +29,6 @@ export async function generateMetadata({
   }
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default async function ServiceDetailPage({
   params,
 }: {
@@ -40,16 +38,17 @@ export default async function ServiceDetailPage({
   const services = getServicesBySlug(slug)
   if (services.length === 0) notFound()
 
-  // Finance slug returns two services (fintech + bookkeeping)
-  const isMulti  = services.length > 1
+  const isMulti = services.length > 1
   const primary  = services[0]
+
+  // Combined FAQ — deduplicated across all services for this slug
+  const allFaq = services.flatMap((s) => s.faq)
 
   return (
     <div className="min-h-screen pt-24">
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg relative overflow-hidden py-24">
-        {/* Accent orb */}
         <div
           className="pointer-events-none absolute right-0 top-0 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/3 rounded-full opacity-10 blur-3xl"
           style={{ background: `radial-gradient(circle, ${primary.accentHex}, transparent)` }}
@@ -57,7 +56,6 @@ export default async function ServiceDetailPage({
         />
 
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
-          {/* Icon */}
           <span
             className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
             style={{ background: `${primary.accentHex}1A` }}
@@ -80,16 +78,11 @@ export default async function ServiceDetailPage({
 
           <h1 className="mt-4 font-syne text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
             {isMulti ? (
-              <>
-                Finance &amp;{' '}
-                <span className="gradient-text-gold">Operations</span>
-              </>
+              <>Finance &amp; <span className="gradient-text-gold">Operations</span></>
             ) : (
               <>
                 {primary.title.split(' ').slice(0, -1).join(' ')}{' '}
-                <span className="gradient-text">
-                  {primary.title.split(' ').slice(-1)}
-                </span>
+                <span className="gradient-text">{primary.title.split(' ').slice(-1)}</span>
               </>
             )}
           </h1>
@@ -102,10 +95,7 @@ export default async function ServiceDetailPage({
             <Link
               href={ROUTES.contact}
               className="inline-flex h-12 items-center gap-2 rounded-lg px-7 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
-              style={{
-                background: primary.accentHex,
-                boxShadow: `0 0 24px ${primary.accentHex}4D`,
-              }}
+              style={{ background: primary.accentHex, boxShadow: `0 0 24px ${primary.accentHex}4D` }}
             >
               Start a project <ArrowRight size={16} aria-hidden />
             </Link>
@@ -119,7 +109,7 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
-      {/* ── Service content — single or multi-tab ─────────────────────────── */}
+      {/* ── Features + CTA ────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className={cn('grid gap-16', isMulti ? 'lg:grid-cols-2' : 'lg:grid-cols-5')}>
           {services.map((service) => (
@@ -133,7 +123,6 @@ export default async function ServiceDetailPage({
                 </h2>
               )}
 
-              {/* Features */}
               <ul className="flex flex-col gap-3" role="list">
                 {service.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
@@ -148,7 +137,6 @@ export default async function ServiceDetailPage({
                 ))}
               </ul>
 
-              {/* Tools */}
               <div className="mt-8">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
                   Tools &amp; tech
@@ -168,20 +156,20 @@ export default async function ServiceDetailPage({
             </div>
           ))}
 
-          {/* CTA card — only shown for single service */}
+          {/* Sticky CTA card — single service only */}
           {!isMulti && (
             <div className="lg:col-span-2">
               <div className="glass-card sticky top-24 p-8">
-                <h3 className="font-syne text-lg font-bold text-white">
-                  Ready to get started?
-                </h3>
+                <h3 className="font-syne text-lg font-bold text-white">Ready to get started?</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Tell us about your project — we&apos;ll respond within 24 hours
-                  with a clear proposal.
+                  Tell us about your project — we&apos;ll respond within 24 hours with a clear proposal.
                 </p>
 
                 {primary.caseStudyTeaser && (
-                  <blockquote className="mt-5 border-l-2 pl-4 text-sm italic text-muted/80" style={{ borderColor: primary.accentHex }}>
+                  <blockquote
+                    className="mt-5 border-l-2 pl-4 text-sm italic text-muted/80"
+                    style={{ borderColor: primary.accentHex }}
+                  >
                     {primary.caseStudyTeaser}
                   </blockquote>
                 )}
@@ -189,10 +177,7 @@ export default async function ServiceDetailPage({
                 <Link
                   href={ROUTES.contact}
                   className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
-                  style={{
-                    background: primary.accentHex,
-                    boxShadow: `0 0 20px ${primary.accentHex}40`,
-                  }}
+                  style={{ background: primary.accentHex, boxShadow: `0 0 20px ${primary.accentHex}40` }}
                 >
                   Start the conversation <ArrowRight size={14} aria-hidden />
                 </Link>
@@ -202,8 +187,31 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+      <section className="border-t border-white/6 bg-bg-secondary py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <h2 className="mb-2 font-syne text-2xl font-bold text-white">
+            Common questions
+          </h2>
+          <p className="mb-10 text-sm text-muted">Everything you need to know before we start.</p>
+
+          <Accordion items={allFaq} accentHex={primary.accentHex} />
+
+          <div className="mt-12 rounded-xl border border-white/8 bg-bg-card/50 p-6 text-center">
+            <p className="text-sm text-muted">Still have questions?</p>
+            <Link
+              href={ROUTES.contact}
+              className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors hover:brightness-110"
+              style={{ borderColor: primary.accentHex, color: primary.accentHex }}
+            >
+              Ask us directly <ArrowRight size={14} aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── Other services ────────────────────────────────────────────────── */}
-      <section className="border-t border-white/6 bg-bg-secondary py-16">
+      <section className="border-t border-white/6 py-16">
         <div className="mx-auto max-w-7xl px-6">
           <p className="mb-8 text-sm font-semibold uppercase tracking-widest text-muted">
             Other services
