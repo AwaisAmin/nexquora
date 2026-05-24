@@ -23,7 +23,7 @@ export default function Accordion({ items, accentHex = '#00F5FF', className }: A
             type="button"
             onClick={() => setOpen(open === i ? null : i)}
             aria-expanded={open === i}
-            className="flex w-full items-start justify-between gap-4 py-5 text-left"
+            className="flex w-full cursor-pointer items-start justify-between gap-4 py-5 text-left"
           >
             <span className="text-sm font-semibold text-white">{q}</span>
             <ChevronDown
