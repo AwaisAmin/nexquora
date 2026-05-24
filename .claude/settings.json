@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('zod'\\); console.log\\('zod ok'\\)\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"d:\\\\Dev\\\\nexquora\\\\lib\\\\schemas\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"d:\\\\Dev\\\\nexquora\\\\app\\\\api\\\\contact\")",
+      "PowerShell(\"done\")"
+    ]
+  }
+}

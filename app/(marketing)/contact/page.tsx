@@ -2,13 +2,20 @@ import type { Metadata } from 'next'
 import { Mail, Clock, MapPin } from 'lucide-react'
 import { BrandIcon } from '@/components/icons'
 import { CONTACT_INFO, SOCIAL_LINKS, BRAND } from '@/lib/constants'
+import ContactForm from './ContactForm'
 
 export const metadata: Metadata = {
   title: `Contact — ${BRAND.name}`,
   description: `Start your project with ${BRAND.name}. We respond within 24 hours.`,
 }
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ role?: string; service?: string }>
+}) {
+  const { role, service } = await searchParams
+
   return (
     <div className="min-h-screen pt-24">
 
@@ -87,36 +94,14 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* ── Right: form placeholder ─────────────────────────────────── */}
+            {/* ── Right: contact form ─────────────────────────────────────── */}
             <div className="glass-card p-8">
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-cyan/20 bg-cyan/5 px-4 py-3">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-cyan" aria-hidden />
-                <p className="text-sm text-cyan">
-                  Full contact form coming in Phase 7 — email us directly in the meantime.
-                </p>
-              </div>
-
-              {/* Static preview of form layout */}
-              <div className="flex flex-col gap-5 opacity-40 pointer-events-none select-none" aria-hidden>
-                <div>
-                  <div className="mb-1.5 h-3 w-12 rounded bg-white/20" />
-                  <div className="h-10 rounded-lg border border-white/8 bg-bg-card" />
-                </div>
-                <div>
-                  <div className="mb-1.5 h-3 w-16 rounded bg-white/20" />
-                  <div className="h-10 rounded-lg border border-white/8 bg-bg-card" />
-                </div>
-                <div>
-                  <div className="mb-1.5 h-3 w-20 rounded bg-white/20" />
-                  <div className="h-10 rounded-lg border border-white/8 bg-bg-card" />
-                </div>
-                <div>
-                  <div className="mb-1.5 h-3 w-24 rounded bg-white/20" />
-                  <div className="h-28 rounded-lg border border-white/8 bg-bg-card" />
-                </div>
-                <div className="h-10 rounded-lg bg-cyan/30" />
-              </div>
+              <ContactForm
+                prefillService={service ?? ''}
+                prefillRole={role ?? ''}
+              />
             </div>
+
           </div>
         </div>
       </section>
