@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,8 +12,8 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import ServiceIcon from '@/components/icons/ServiceIcon'
 import { NAV_LINKS, BRAND } from '@/lib/constants'
-import { ROUTES, serviceRoute } from '@/lib/routes'
-import { SERVICES } from '@/lib/data/services'
+import { ROUTES } from '@/lib/routes'
+import { SERVICES, getServiceUrl } from '@/lib/data/services'
 import { cn } from '@/lib/utils'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
@@ -39,6 +40,13 @@ export default function Navbar() {
   const [scrolled,   setScrolled]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const megaRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+
+  function isActive(href: string): boolean {
+    const path = href.split('#')[0]
+    if (path === '/') return pathname === '/'
+    return pathname === path || pathname.startsWith(path + '/')
+  }
 
   useGSAP(
     () => {
@@ -88,7 +96,10 @@ export default function Navbar() {
             {/* Services mega-dropdown */}
             <div className="relative" onMouseEnter={openMega} onMouseLeave={closeMega}>
               <button
-                className="flex items-center gap-1 text-sm text-muted transition-colors duration-150 hover:text-white"
+                className={cn(
+                  'flex items-center gap-1 text-sm transition-colors duration-150 hover:text-white',
+                  isActive('/services') ? 'text-cyan' : 'text-muted',
+                )}
                 aria-haspopup="true"
                 aria-label="Services menu"
               >
@@ -112,7 +123,7 @@ export default function Navbar() {
                     {SERVICES.map((service) => (
                       <Link
                         key={service.id}
-                        href={serviceRoute(service.slug)}
+                        href={getServiceUrl(service)}
                         role="menuitem"
                         className="group flex items-start gap-3 rounded-xl p-3 transition-colors duration-150 hover:bg-white/5"
                         onClick={closeMega}
@@ -148,7 +159,10 @@ export default function Navbar() {
               <Link
                 key={label}
                 href={href}
-                className="text-sm text-muted transition-colors duration-150 hover:text-white"
+                className={cn(
+                  'text-sm transition-colors duration-150 hover:text-white',
+                  isActive(href) ? 'text-cyan' : 'text-muted',
+                )}
               >
                 {label}
               </Link>
@@ -212,7 +226,7 @@ export default function Navbar() {
                   {SERVICES.map((service) => (
                     <Link
                       key={service.id}
-                      href={serviceRoute(service.slug)}
+                      href={getServiceUrl(service)}
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-2 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-white/5"
                       style={{ color: service.accentHex }}
@@ -237,7 +251,10 @@ export default function Navbar() {
                   <Link
                     href={href}
                     onClick={() => setMobileOpen(false)}
-                    className="block py-2 font-syne text-2xl font-bold text-white/70 transition-colors hover:text-white"
+                    className={cn(
+                      'block py-2 font-syne text-2xl font-bold transition-colors hover:text-white',
+                      isActive(href) ? 'text-cyan' : 'text-white/70',
+                    )}
                   >
                     {label}
                   </Link>

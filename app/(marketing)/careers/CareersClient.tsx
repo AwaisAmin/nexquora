@@ -44,7 +44,7 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/8 text-muted transition-colors hover:border-white/20 hover:text-white"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 text-muted transition-colors hover:border-white/20 hover:text-white"
           aria-label="Close"
         >
           <X size={16} aria-hidden />
@@ -113,7 +113,7 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg border border-white/8 py-3 text-sm text-muted transition-colors hover:border-white/15 hover:text-white"
+          className="cursor-pointer rounded-lg border border-white/8 py-3 text-sm text-muted transition-colors hover:border-white/15 hover:text-white"
         >
           Close
         </button>
