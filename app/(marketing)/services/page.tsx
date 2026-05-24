@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import ServiceIcon from '@/components/icons/ServiceIcon'
-import { SERVICES, SERVICE_COMPARISON } from '@/lib/data/services'
-import { serviceRoute } from '@/lib/routes'
+import { SERVICES, SERVICE_COMPARISON, getServiceUrl } from '@/lib/data/services'
 import { BRAND } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -40,7 +39,7 @@ export default function ServicesPage() {
           {SERVICES.map((service) => (
             <Link
               key={service.id}
-              href={serviceRoute(service.slug)}
+              href={getServiceUrl(service)}
               className={cn(
                 'group glass-card flex flex-col gap-5 p-7 transition-all duration-300',
                 'hover:-translate-y-1.5',

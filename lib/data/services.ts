@@ -268,6 +268,15 @@ export function getServiceById(id: string): Service | undefined {
   return SERVICES.find((s) => s.id === id)
 }
 
+/**
+ * Returns the canonical URL for a service card link.
+ * Bookkeeping gets `?tab=bookkeeping` so the finance page pre-selects its tab.
+ */
+export function getServiceUrl(service: Service): string {
+  if (service.id === 'bookkeeping') return '/services/finance?tab=bookkeeping'
+  return `/services/${service.slug}`
+}
+
 export const SERVICE_COMPARISON: ComparisonRow[] = [
   { service: 'AI & Machine Learning', bestFor: 'Automation, chatbots, data products', timeline: '6–12 weeks',  budget: '$25k+' },
   { service: 'Web Development',       bestFor: 'SaaS, portals, marketing sites',      timeline: '4–10 weeks',  budget: '$15k+' },

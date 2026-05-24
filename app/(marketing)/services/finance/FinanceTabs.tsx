@@ -7,10 +7,11 @@ import type { Service } from '@/lib/types'
 
 interface FinanceTabsProps {
   services: Service[]
+  initialTabIndex?: number
 }
 
-export default function FinanceTabs({ services }: FinanceTabsProps) {
-  const [active, setActive] = useState(0)
+export default function FinanceTabs({ services, initialTabIndex = 0 }: FinanceTabsProps) {
+  const [active, setActive] = useState(initialTabIndex)
   const service = services[active]
 
   return (
@@ -23,7 +24,7 @@ export default function FinanceTabs({ services }: FinanceTabsProps) {
             type="button"
             onClick={() => setActive(i)}
             className={cn(
-              'flex-1 rounded-lg py-2.5 text-sm font-semibold transition-all',
+              'flex-1 cursor-pointer rounded-lg py-2.5 text-sm font-semibold transition-all',
               active === i
                 ? 'text-bg-primary shadow-sm'
                 : 'text-muted hover:text-white',

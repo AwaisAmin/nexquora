@@ -2,8 +2,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import ServiceIcon from '@/components/icons/ServiceIcon'
 import SectionHeading from '@/components/ui/SectionHeading'
-import { SERVICES } from '@/lib/data/services'
-import { serviceRoute } from '@/lib/routes'
+import { SERVICES, getServiceUrl } from '@/lib/data/services'
 
 export default function ServicesGrid() {
   return (
@@ -19,7 +18,7 @@ export default function ServicesGrid() {
         {SERVICES.map((service) => (
           <Link
             key={service.id}
-            href={serviceRoute(service.slug)}
+            href={getServiceUrl(service)}
             className="group glass-card flex flex-col gap-4 p-7 transition-all duration-300 hover:-translate-y-1.5"
           >
             {/* Icon */}

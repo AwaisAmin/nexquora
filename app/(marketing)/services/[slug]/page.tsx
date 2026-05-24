@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
 import ServiceIcon from '@/components/icons/ServiceIcon'
 import Accordion from '@/components/ui/Accordion'
-import { SERVICES, getServicesBySlug } from '@/lib/data/services'
+import { SERVICES, getServicesBySlug, getServiceUrl } from '@/lib/data/services'
 import { ROUTES } from '@/lib/routes'
 import { BRAND } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -220,7 +220,7 @@ export default async function ServiceDetailPage({
             {SERVICES.filter((s) => s.slug !== slug).map((service) => (
               <Link
                 key={service.id}
-                href={`/services/${service.slug}`}
+                href={getServiceUrl(service)}
                 className="group flex items-center gap-2.5 rounded-xl border border-white/6 bg-bg-card/50 p-4 transition-all hover:border-white/12 hover:bg-bg-card"
               >
                 <ServiceIcon

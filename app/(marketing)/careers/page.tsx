@@ -1,12 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { MapPin, DollarSign, Briefcase, ArrowRight } from 'lucide-react'
-import { JOBS } from '@/lib/data/jobs'
 import { CULTURE_PILLARS } from '@/lib/data/team'
-import { DEPT_ACCENT } from '@/lib/constants'
 import { ROUTES } from '@/lib/routes'
 import { BRAND } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import CareersClient from './CareersClient'
 
 export const metadata: Metadata = {
   title: `Careers — ${BRAND.name}`,
@@ -48,68 +45,12 @@ export default function CareersPage() {
         </div>
       </section>
 
-      {/* ── Job listings ──────────────────────────────────────────────────── */}
+      {/* ── Job listings (interactive — filter + modal) ────────────────────── */}
       <section id="openings" className="mx-auto max-w-7xl px-6 py-20">
-        <h2 className="mb-10 font-syne text-2xl font-bold text-white">
-          Open roles{' '}
-          <span className="ml-2 rounded-full bg-cyan/10 px-3 py-1 text-sm font-medium text-cyan">
-            {JOBS.length}
-          </span>
+        <h2 className="mb-8 font-syne text-2xl font-bold text-white">
+          Open roles
         </h2>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {JOBS.map((job) => {
-            const accent = DEPT_ACCENT[job.department]
-            return (
-              <article
-                key={job.id}
-                className="glass-card flex flex-col gap-4 p-6 transition-all hover:-translate-y-0.5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="mb-2 flex flex-wrap gap-2">
-                      <span
-                        className="rounded-md px-2 py-0.5 text-xs font-semibold"
-                        style={{ background: `${accent}18`, color: accent }}
-                      >
-                        {job.department}
-                      </span>
-                      <span className="rounded-md border border-white/8 px-2 py-0.5 text-xs text-muted">
-                        {job.type}
-                      </span>
-                    </div>
-                    <h3 className="font-syne text-lg font-bold text-white">{job.title}</h3>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-4 text-xs text-muted">
-                  <span className="flex items-center gap-1">
-                    <MapPin size={12} aria-hidden /> {job.location}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <DollarSign size={12} aria-hidden /> {job.salary}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Briefcase size={12} aria-hidden /> {job.department}
-                  </span>
-                </div>
-
-                <p className="line-clamp-2 text-sm leading-relaxed text-muted">
-                  {job.description}
-                </p>
-
-                <Link
-                  href={`${ROUTES.contact}?role=${encodeURIComponent(job.title)}`}
-                  className={cn('mt-auto flex items-center gap-1.5 text-sm font-medium transition-all hover:gap-2.5')}
-                  style={{ color: accent }}
-                  aria-label={`Apply for ${job.title}`}
-                >
-                  Apply now <ArrowRight size={14} aria-hidden />
-                </Link>
-              </article>
-            )
-          })}
-        </div>
+        <CareersClient />
       </section>
 
       {/* ── Bottom CTA ────────────────────────────────────────────────────── */}

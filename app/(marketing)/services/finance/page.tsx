@@ -21,10 +21,17 @@ const TRUST_SIGNALS = [
   { icon: Clock,        label: 'Live in 3 business days' },
 ]
 
-export default function FinancePage() {
-  const services = getServicesBySlug('finance')
+export default async function FinancePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>
+}) {
+  const { tab } = await searchParams
+  const services    = getServicesBySlug('finance')
   const fintech     = services.find((s) => s.id === 'fintech')!
   const bookkeeping = services.find((s) => s.id === 'bookkeeping')!
+  // services[0] = fintech, services[1] = bookkeeping
+  const initialTabIndex = tab === 'bookkeeping' ? 1 : 0
 
   // Combined FAQ
   const allFaq = [...fintech.faq, ...bookkeeping.faq]
@@ -96,7 +103,7 @@ export default function FinancePage() {
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-16 lg:grid-cols-5">
           <div className="lg:col-span-3">
-            <FinanceTabs services={services} />
+            <FinanceTabs services={services} initialTabIndex={initialTabIndex} />
           </div>
 
           {/* Sticky CTA */}
