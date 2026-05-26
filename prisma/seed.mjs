@@ -1,48 +1,12 @@
-import type { Service, ComparisonRow, PricingPlan, FaqItem } from "@/lib/types";
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-export const SERVICE_ICON_OPTIONS = [
-  "Brain",
-  "Globe",
-  "Smartphone",
-  "Cloud",
-  "CreditCard",
-  "BookOpen",
-  "Code",
-  "Server",
-  "Database",
-  "Shield",
-  "Zap",
-  "Layers",
-  "BarChart",
-  "Lock",
-  "Settings",
-  "Terminal",
-] as const;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = new PrismaClient({ adapter: new PrismaPg(pool) });
 
-export type ServiceIconName = (typeof SERVICE_ICON_OPTIONS)[number];
-
-export function parseFaq(raw: string): FaqItem[] {
-  const items: FaqItem[] = [];
-  const blocks = raw.split(/\n\s*\n/).filter(Boolean);
-  for (const block of blocks) {
-    const qMatch = block.match(/^Q:\s*([\s\S]+?)(?=\nA:|$)/);
-    const aMatch = block.match(/A:\s*([\s\S]+)/);
-    if (qMatch && aMatch) {
-      items.push({ q: qMatch[1].trim(), a: aMatch[1].trim() });
-    }
-  }
-  return items;
-}
-
-export function formatFaq(faq: FaqItem[]): string {
-  return faq.map((item) => `Q: ${item.q}\nA: ${item.a}`).join("\n\n");
-}
-
-export function getServiceUrl(service: Pick<Service, "slug">): string {
-  return `/services/${service.slug}`;
-}
-
-export const DEFAULT_SERVICES: Omit<Service, "id">[] = [
+const SERVICES = [
   {
     slug: "ai",
     title: "AI & Machine Learning",
@@ -354,85 +318,19 @@ export const DEFAULT_SERVICES: Omit<Service, "id">[] = [
   },
 ];
 
-export const SERVICE_COMPARISON: ComparisonRow[] = [
-  {
-    service: "AI & Machine Learning",
-    bestFor: "Automation, chatbots, data products",
-    timeline: "6–12 weeks",
-    budget: "$25k+",
-  },
-  {
-    service: "Web Development",
-    bestFor: "SaaS, portals, marketing sites",
-    timeline: "4–10 weeks",
-    budget: "$15k+",
-  },
-  {
-    service: "Mobile Apps",
-    bestFor: "iOS & Android consumer/B2B apps",
-    timeline: "8–16 weeks",
-    budget: "$20k+",
-  },
-  {
-    service: "DevOps & Cloud",
-    bestFor: "Infrastructure, CI/CD, scaling",
-    timeline: "2–6 weeks",
-    budget: "$8k+",
-  },
-  {
-    service: "Fintech Solutions",
-    bestFor: "Payments, compliance, dashboards",
-    timeline: "8–20 weeks",
-    budget: "$30k+",
-  },
-  {
-    service: "Bookkeeping & Payroll",
-    bestFor: "SMBs, startups, distributed teams",
-    timeline: "Ongoing",
-    budget: "$500/mo+",
-  },
-];
+async function main() {
+  const existing = await db.service.count();
+  if (existing > 0) {
+    console.log(`Already have ${existing} service(s) in DB — skipping seed.`);
+    return;
+  }
+  await db.service.createMany({ data: SERVICES });
+  console.log(`Seeded ${SERVICES.length} services successfully.`);
+}
 
-export const BOOKKEEPING_PLANS: PricingPlan[] = [
-  {
-    name: "Starter",
-    price: "$500",
-    period: "/month",
-    description: "For early-stage startups with straightforward books.",
-    features: [
-      "Monthly bookkeeping (up to 150 transactions)",
-      "Bank & credit card reconciliation",
-      "Monthly P&L and balance sheet",
-      "Email support (48h response)",
-    ],
-  },
-  {
-    name: "Growth",
-    price: "$1,200",
-    period: "/month",
-    description: "For funded startups with payroll and more complexity.",
-    features: [
-      "Monthly bookkeeping (up to 500 transactions)",
-      "Full payroll processing (up to 15 employees)",
-      "AP / AR management",
-      "Quarterly tax estimates",
-      "Dedicated bookkeeper + Slack access",
-    ],
-    highlighted: true,
-  },
-  {
-    name: "Scale",
-    price: "$2,500",
-    period: "/month",
-    description:
-      "For scaling companies with multi-entity or multi-currency needs.",
-    features: [
-      "Unlimited transactions",
-      "Full payroll (unlimited employees)",
-      "Multi-entity / multi-currency consolidation",
-      "W-2 & 1099 preparation included",
-      "Monthly CFO review call",
-      "Priority Slack support",
-    ],
-  },
-];
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => db.$disconnect());

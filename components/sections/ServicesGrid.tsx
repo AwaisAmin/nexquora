@@ -1,10 +1,13 @@
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import ServiceIcon from '@/components/icons/ServiceIcon'
-import SectionHeading from '@/components/ui/SectionHeading'
-import { SERVICES, getServiceUrl } from '@/lib/data/services'
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import ServiceIcon from "@/components/icons/ServiceIcon";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { getPublishedServices } from "@/lib/dal";
+import { getServiceUrl } from "@/lib/data/services";
 
-export default function ServicesGrid() {
+export default async function ServicesGrid() {
+  const services = await getPublishedServices();
+
   return (
     <section id="services" className="mx-auto max-w-7xl px-6 py-24">
       <SectionHeading
@@ -15,7 +18,7 @@ export default function ServicesGrid() {
       />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {SERVICES.map((service) => (
+        {services.map((service) => (
           <Link
             key={service.id}
             href={getServiceUrl(service)}
@@ -49,7 +52,9 @@ export default function ServicesGrid() {
             </div>
 
             {/* Description */}
-            <p className="flex-1 text-sm leading-relaxed text-muted">{service.description}</p>
+            <p className="flex-1 text-sm leading-relaxed text-muted">
+              {service.description}
+            </p>
 
             {/* CTA */}
             <span
@@ -62,5 +67,5 @@ export default function ServicesGrid() {
         ))}
       </div>
     </section>
-  )
+  );
 }

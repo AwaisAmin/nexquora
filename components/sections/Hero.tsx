@@ -1,43 +1,47 @@
-'use client'
+"use client";
 
-import { motion, type Variants } from 'framer-motion'
-import Link from 'next/link'
-import { ArrowRight, Zap } from 'lucide-react'
-import ServiceIcon from '@/components/icons/ServiceIcon'
-import { SERVICES } from '@/lib/data/services'
-import { ROUTES } from '@/lib/routes'
-import { BRAND } from '@/lib/constants'
-import { TEAM_MEMBERS } from '@/lib/data/team'
+import { motion, type Variants } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, Zap } from "lucide-react";
+import ServiceIcon from "@/components/icons/ServiceIcon";
+import type { Service } from "@/lib/types";
+import { ROUTES } from "@/lib/routes";
+import { BRAND } from "@/lib/constants";
+import { TEAM_MEMBERS } from "@/lib/data/team";
 
 const CONTAINER: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
-}
+};
 
 const ITEM: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+    },
   },
-}
+};
 
-export default function Hero() {
+export default function Hero({ services }: { services: Service[] }) {
   return (
     <section className="relative grid-bg overflow-hidden py-28 lg:py-36">
       {/* Ambient orbs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        aria-hidden
+      >
         <div className="absolute left-1/4 top-1/3 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan/8 blur-3xl" />
         <div className="absolute right-1/4 bottom-1/4 h-72 w-72 translate-x-1/2 translate-y-1/2 rounded-full bg-purple/8 blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-16 lg:grid-cols-2">
-
           {/* ── Left: Copy ─────────────────────────────────────────────────── */}
           <motion.div variants={CONTAINER} initial="hidden" animate="show">
-
             {/* Eyebrow badge */}
             <motion.p
               variants={ITEM}
@@ -51,7 +55,7 @@ export default function Hero() {
               variants={ITEM}
               className="mt-5 font-syne text-5xl font-bold leading-[1.08] text-white sm:text-6xl lg:text-7xl"
             >
-              We build digital{' '}
+              We build digital{" "}
               <span className="gradient-text">products that last</span>
             </motion.h1>
 
@@ -98,7 +102,9 @@ export default function Hero() {
                 ))}
               </div>
               <p className="text-xs text-muted">
-                Trusted by <span className="font-semibold text-white">50+ founders</span> worldwide
+                Trusted by{" "}
+                <span className="font-semibold text-white">50+ founders</span>{" "}
+                worldwide
               </p>
             </motion.div>
           </motion.div>
@@ -106,7 +112,7 @@ export default function Hero() {
           {/* ── Right: Floating service cards ──────────────────────────────── */}
           <div className="relative hidden lg:block" aria-hidden>
             <div className="grid grid-cols-3 gap-4">
-              {SERVICES.map((service, i) => (
+              {services.map((service, i) => (
                 <motion.div
                   key={service.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -114,7 +120,12 @@ export default function Hero() {
                   transition={{
                     duration: 0.6,
                     delay: 0.3 + i * 0.08,
-                    ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+                    ease: [0.22, 1, 0.36, 1] as [
+                      number,
+                      number,
+                      number,
+                      number,
+                    ],
                   }}
                 >
                   <motion.div
@@ -122,7 +133,7 @@ export default function Hero() {
                     transition={{
                       duration: 3 + i * 0.4,
                       repeat: Infinity,
-                      ease: 'easeInOut',
+                      ease: "easeInOut",
                       delay: i * 0.2,
                     }}
                     className="glass-card flex flex-col items-center gap-3 p-5 text-center"
@@ -138,16 +149,15 @@ export default function Hero() {
                       />
                     </span>
                     <p className="font-syne text-xs font-bold leading-tight text-white">
-                      {service.title.split(' ').slice(0, 2).join(' ')}
+                      {service.title.split(" ").slice(0, 2).join(" ")}
                     </p>
                   </motion.div>
                 </motion.div>
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { Mail, Clock, MapPin } from 'lucide-react'
-import { BrandIcon } from '@/components/icons'
+import Link from "next/link";
+import { Mail, Clock, MapPin } from "lucide-react";
+import { BrandIcon } from "@/components/icons";
 import {
   NAV_LINKS,
   COMPANY_LINKS,
@@ -8,12 +8,12 @@ import {
   SOCIAL_LINKS,
   CONTACT_INFO,
   BRAND,
-} from '@/lib/constants'
-import { ROUTES, serviceRoute } from '@/lib/routes'
-import { SERVICES } from '@/lib/data/services'
+} from "@/lib/constants";
+import { ROUTES, serviceRoute } from "@/lib/routes";
+import type { Service } from "@/lib/types";
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear()
+export default function Footer({ services }: { services: Service[] }) {
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer aria-label="Site footer">
@@ -22,7 +22,7 @@ export default function Footer() {
         className="h-px w-full"
         style={{
           background:
-            'linear-gradient(90deg, rgba(0,245,255,0.4) 0%, transparent 50%, rgba(124,58,237,0.4) 100%)',
+            "linear-gradient(90deg, rgba(0,245,255,0.4) 0%, transparent 50%, rgba(124,58,237,0.4) 100%)",
         }}
         aria-hidden
       />
@@ -31,7 +31,6 @@ export default function Footer() {
         {/* ── Main grid ──────────────────────────────────────────────────────── */}
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="grid grid-cols-1 gap-12 md:grid-cols-5">
-
             {/* Col 1–2: Brand ─────────────────────────────────────────────── */}
             <div className="md:col-span-2">
               <Link
@@ -39,7 +38,10 @@ export default function Footer() {
                 className="inline-block font-syne text-xl font-bold text-white"
                 aria-label={`${BRAND.name} home`}
               >
-                {BRAND.name}<span className="text-cyan" aria-hidden>·</span>
+                {BRAND.name}
+                <span className="text-cyan" aria-hidden>
+                  ·
+                </span>
               </Link>
 
               <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">
@@ -69,7 +71,7 @@ export default function Footer() {
                 Services
               </p>
               <ul className="flex flex-col gap-2.5" role="list">
-                {SERVICES.map((service) => (
+                {services.map((service) => (
                   <li key={service.id}>
                     <Link
                       href={serviceRoute(service.slug)}
@@ -129,7 +131,11 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-3" role="list">
                 <li className="flex items-start gap-2.5">
-                  <Mail size={14} className="mt-0.5 shrink-0 text-cyan" aria-hidden />
+                  <Mail
+                    size={14}
+                    className="mt-0.5 shrink-0 text-cyan"
+                    aria-hidden
+                  />
                   <a
                     href={`mailto:${CONTACT_INFO.email}`}
                     className="text-sm text-white/60 transition-colors hover:text-white"
@@ -138,15 +144,29 @@ export default function Footer() {
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <Clock size={14} className="mt-0.5 shrink-0 text-cyan" aria-hidden />
-                  <span className="text-sm text-white/60">{CONTACT_INFO.hours}</span>
+                  <Clock
+                    size={14}
+                    className="mt-0.5 shrink-0 text-cyan"
+                    aria-hidden
+                  />
+                  <span className="text-sm text-white/60">
+                    {CONTACT_INFO.hours}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <MapPin size={14} className="mt-0.5 shrink-0 text-cyan" aria-hidden />
-                  <span className="text-sm text-white/60">{CONTACT_INFO.location}</span>
+                  <MapPin
+                    size={14}
+                    className="mt-0.5 shrink-0 text-cyan"
+                    aria-hidden
+                  />
+                  <span className="text-sm text-white/60">
+                    {CONTACT_INFO.location}
+                  </span>
                 </li>
               </ul>
-              <p className="mt-5 text-xs text-muted">NDA available on request.</p>
+              <p className="mt-5 text-xs text-muted">
+                NDA available on request.
+              </p>
             </div>
           </div>
         </div>
@@ -172,5 +192,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

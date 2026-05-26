@@ -4,19 +4,11 @@ import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 import ServiceIcon from "@/components/icons/ServiceIcon";
 import Accordion from "@/components/ui/Accordion";
-import {
-  SERVICES,
-  getServicesBySlug,
-  getServiceUrl,
-} from "@/lib/data/services";
+import { getPublishedServices, getServicesBySlug } from "@/lib/dal";
+import { getServiceUrl } from "@/lib/data/services";
 import { ROUTES } from "@/lib/routes";
 import { BRAND } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-export function generateStaticParams() {
-  const slugs = [...new Set(SERVICES.map((s) => s.slug))];
-  return slugs.map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({
   params,
@@ -24,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const services = getServicesBySlug(slug);
+  const services = await getServicesBySlug(slug);
   if (services.length === 0) return {};
   const primary = services[0];
   return {
@@ -39,21 +31,32 @@ export default async function ServiceDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const services = getServicesBySlug(slug);
+  const [services, allServices] = await Promise.all([
+    getServicesBySlug(slug),
+    getPublishedServices(),
+  ]);
+
   if (services.length === 0) notFound();
 
   const isMulti = services.length > 1;
   const primary = services[0];
 
-  // Combined FAQ — deduplicated across all services for this slug
   const allFaq = services.flatMap((s) => s.faq);
+
+  // Other services — deduplicated by slug, excluding current slug
+  const seen = new Set<string>([slug]);
+  const otherServices = allServices.filter((s) => {
+    if (seen.has(s.slug)) return false;
+    seen.add(s.slug);
+    return true;
+  });
 
   return (
     <div className="min-h-screen pt-24">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg relative overflow-hidden py-24">
         <div
-          className="pointer-events-none absolute right-0 top-0 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/3 rounded-full opacity-10 blur-3xl"
+          className="pointer-events-none absolute right-0 top-0 h-150 w-150 translate-x-1/3 -translate-y-1/3 rounded-full opacity-10 blur-3xl"
           style={{
             background: `radial-gradient(circle, ${primary.accentHex}, transparent)`,
           }}
@@ -242,32 +245,34 @@ export default async function ServiceDetailPage({
       </section>
 
       {/* ── Other services ────────────────────────────────────────────────── */}
-      <section className="border-t border-white/6 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <p className="mb-8 text-sm font-semibold uppercase tracking-widest text-muted">
-            Other services
-          </p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {SERVICES.filter((s) => s.slug !== slug).map((service) => (
-              <Link
-                key={service.id}
-                href={getServiceUrl(service)}
-                className="group flex items-center gap-2.5 rounded-xl border border-white/6 bg-bg-card/50 p-4 transition-all hover:border-white/12 hover:bg-bg-card"
-              >
-                <ServiceIcon
-                  name={service.icon}
-                  size={14}
-                  style={{ color: service.accentHex }}
-                  aria-hidden
-                />
-                <span className="text-sm text-muted transition-colors group-hover:text-white">
-                  {service.title}
-                </span>
-              </Link>
-            ))}
+      {otherServices.length > 0 && (
+        <section className="border-t border-white/6 py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <p className="mb-8 text-sm font-semibold uppercase tracking-widest text-muted">
+              Other services
+            </p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {otherServices.map((service) => (
+                <Link
+                  key={service.id}
+                  href={getServiceUrl(service)}
+                  className="group flex items-center gap-2.5 rounded-xl border border-white/6 bg-bg-card/50 p-4 transition-all hover:border-white/12 hover:bg-bg-card"
+                >
+                  <ServiceIcon
+                    name={service.icon}
+                    size={14}
+                    style={{ color: service.accentHex }}
+                    aria-hidden
+                  />
+                  <span className="text-sm text-muted transition-colors group-hover:text-white">
+                    {service.title}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

@@ -52,3 +52,25 @@ model Application {
 
   @@map("applications")
 }
+
+model Service {
+  id              String   @id @default(uuid())
+  slug            String
+  title           String
+  tagline         String
+  description     String
+  longDescription String   @map("long_description")
+  icon            String
+  accentHex       String   @map("accent_hex")
+  features        String[]
+  tools           String[]
+  faq             Json     @default("[]")
+  caseStudyTeaser String?  @map("case_study_teaser")
+  published       Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@map("services")
+}

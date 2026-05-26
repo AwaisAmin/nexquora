@@ -3,6 +3,7 @@ import {
   MessageSquare,
   FileText,
   Briefcase,
+  Layers,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -18,4 +19,5 @@ export const ADMIN_NAV: NavItem[] = [
   { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
   { href: "/admin/applications", label: "Applications", icon: FileText },
   { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
+  { href: "/admin/services", label: "Services", icon: Layers },
 ];

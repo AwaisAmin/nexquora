@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BRAND } from "@/lib/constants";
+import { getPublishedServices } from "@/lib/dal";
 import {
   Hero,
   StatsBar,
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
   description: BRAND.description,
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const services = await getPublishedServices();
   return (
     <main>
-      <Hero />
+      <Hero services={services} />
       <StatsBar />
       <ServicesGrid />
       <HowWeWork />

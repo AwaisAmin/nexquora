@@ -1,21 +1,31 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import ServiceIcon from '@/components/icons/ServiceIcon'
-import { SERVICES, SERVICE_COMPARISON, getServiceUrl } from '@/lib/data/services'
-import { BRAND } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import ServiceIcon from "@/components/icons/ServiceIcon";
+import { getPublishedServices } from "@/lib/dal";
+import { getServiceUrl, SERVICE_COMPARISON } from "@/lib/data/services";
+import { BRAND } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `Services — ${BRAND.name}`,
   description:
-    'AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.',
-}
+    "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
+};
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getPublishedServices();
+
+  // Deduplicate by slug for display (finance appears once)
+  const seen = new Set<string>();
+  const uniqueServices = services.filter((s) => {
+    if (seen.has(s.slug)) return false;
+    seen.add(s.slug);
+    return true;
+  });
+
   return (
     <div className="min-h-screen pt-24">
-
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg py-24 text-center">
         <div className="mx-auto max-w-3xl px-6">
@@ -23,12 +33,11 @@ export default function ServicesPage() {
             What We Build
           </p>
           <h1 className="mt-4 font-syne text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-            Everything you need{' '}
-            <span className="gradient-text">to scale</span>
+            Everything you need <span className="gradient-text">to scale</span>
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-muted">
-            Six specialist practices under one roof — so you never have to coordinate
-            five agencies to ship a single product.
+            Six specialist practices under one roof — so you never have to
+            coordinate five agencies to ship a single product.
           </p>
         </div>
       </section>
@@ -36,13 +45,13 @@ export default function ServicesPage() {
       {/* ── Services grid ─────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((service) => (
+          {uniqueServices.map((service) => (
             <Link
               key={service.id}
               href={getServiceUrl(service)}
               className={cn(
-                'group glass-card flex flex-col gap-5 p-7 transition-all duration-300',
-                'hover:-translate-y-1.5',
+                "group glass-card flex flex-col gap-5 p-7 transition-all duration-300",
+                "hover:-translate-y-1.5",
               )}
             >
               <span
@@ -110,10 +119,18 @@ export default function ServicesPage() {
           <table className="w-full text-sm" aria-label="Service comparison">
             <thead>
               <tr className="border-b border-white/8 bg-bg-card">
-                <th className="px-6 py-4 text-left font-semibold text-white">Service</th>
-                <th className="px-6 py-4 text-left font-semibold text-white">Best for</th>
-                <th className="px-6 py-4 text-left font-semibold text-white">Typical timeline</th>
-                <th className="px-6 py-4 text-left font-semibold text-white">Starting budget</th>
+                <th className="px-6 py-4 text-left font-semibold text-white">
+                  Service
+                </th>
+                <th className="px-6 py-4 text-left font-semibold text-white">
+                  Best for
+                </th>
+                <th className="px-6 py-4 text-left font-semibold text-white">
+                  Typical timeline
+                </th>
+                <th className="px-6 py-4 text-left font-semibold text-white">
+                  Starting budget
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -121,11 +138,13 @@ export default function ServicesPage() {
                 <tr
                   key={row.service}
                   className={cn(
-                    'border-b border-white/5 transition-colors hover:bg-white/3',
-                    i % 2 === 0 ? 'bg-transparent' : 'bg-bg-card/30',
+                    "border-b border-white/5 transition-colors hover:bg-white/3",
+                    i % 2 === 0 ? "bg-transparent" : "bg-bg-card/30",
                   )}
                 >
-                  <td className="px-6 py-4 font-medium text-white">{row.service}</td>
+                  <td className="px-6 py-4 font-medium text-white">
+                    {row.service}
+                  </td>
                   <td className="px-6 py-4 text-muted">{row.bestFor}</td>
                   <td className="px-6 py-4 text-muted">{row.timeline}</td>
                   <td className="px-6 py-4 text-muted">{row.budget}</td>
@@ -136,5 +155,5 @@ export default function ServicesPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
