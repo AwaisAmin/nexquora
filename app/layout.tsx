@@ -45,7 +45,12 @@ export default function RootLayout({
       lang="en"
       className={`${syne.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <a href="#main-content" className="skip-to-content">
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   )
 }

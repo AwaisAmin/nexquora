@@ -11,6 +11,22 @@ export const metadata: Metadata = {
   title: `Services — ${BRAND.name}`,
   description:
     "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
+  openGraph: {
+    title: `Services — ${BRAND.name}`,
+    description:
+      "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
+    url: "https://nexquora.com/services",
+    siteName: BRAND.name,
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Services — ${BRAND.name}`,
+    description:
+      "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default async function ServicesPage() {

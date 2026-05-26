@@ -10,7 +10,24 @@ export const metadata: Metadata = {
   title: `Careers — ${BRAND.name}`,
   description:
     "Join the remote-first team building AI, fintech, and digital products at Nexquora.",
+  openGraph: {
+    title: "Careers — ${BRAND.name}",
+    description:
+      "Join the remote-first team building AI, fintech, and digital products at Nexquora.",
+    url: "https://nexquora.com/careers",
+    siteName: BRAND.name,
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Careers — ${BRAND.name}",
+    description:
+      "Join the remote-first team building AI, fintech, and digital products at Nexquora.",
+    images: ["/og-image.png"],
+  },
 };
+;
 
 export default async function CareersPage() {
   const jobs = await getPublishedJobs();

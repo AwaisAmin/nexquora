@@ -21,7 +21,24 @@ export const metadata: Metadata = {
   title: `About — ${BRAND.name}`,
   description:
     "We exist to build technology that gives founders and growing companies an unfair advantage.",
+  openGraph: {
+    title: "About — ${BRAND.name}",
+    description:
+      "We exist to build technology that gives founders and growing companies an unfair advantage.",
+    url: "https://nexquora.com/about",
+    siteName: BRAND.name,
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About — ${BRAND.name}",
+    description:
+      "We exist to build technology that gives founders and growing companies an unfair advantage.",
+    images: ["/og-image.png"],
+  },
 };
+;
 
 const VALUE_ICON_MAP: Record<string, LucideIcon> = { Zap, Globe, Users, Eye };
 

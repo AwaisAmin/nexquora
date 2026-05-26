@@ -7,6 +7,20 @@ import ContactForm from './ContactForm'
 export const metadata: Metadata = {
   title: `Contact — ${BRAND.name}`,
   description: `Start your project with ${BRAND.name}. We respond within 24 hours.`,
+  openGraph: {
+    title: `Contact — ${BRAND.name}`,
+    description: `Start your project with ${BRAND.name}. We respond within 24 hours.`,
+    url: 'https://nexquora.com/contact',
+    siteName: BRAND.name,
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Contact — ${BRAND.name}`,
+    description: `Start your project with ${BRAND.name}. We respond within 24 hours.`,
+    images: ['/og-image.png'],
+  },
 }
 
 export default async function ContactPage({
