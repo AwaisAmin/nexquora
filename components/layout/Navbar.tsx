@@ -11,6 +11,7 @@ import type { Variants } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
 import ServiceIcon from "@/components/icons/ServiceIcon";
+import NexquoraLogo from "@/components/icons/NexquoraLogo";
 import { NAV_LINKS, BRAND } from "@/lib/constants";
 import { ROUTES } from "@/lib/routes";
 import { getServiceUrl } from "@/lib/data/services";
@@ -107,12 +108,7 @@ export default function Navbar({ services }: { services: Service[] }) {
             className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
             aria-label={`${BRAND.name} home`}
           >
-            <span className="font-syne text-xl font-bold text-white">
-              {BRAND.name}
-              <span className="text-cyan" aria-hidden>
-                ·
-              </span>
-            </span>
+            <NexquoraLogo />
           </Link>
 
           {/* ── Desktop links ──────────────────────────────────────────────── */}
@@ -231,12 +227,8 @@ export default function Navbar({ services }: { services: Service[] }) {
               <Link
                 href={ROUTES.home}
                 onClick={() => setMobileOpen(false)}
-                className="font-syne text-xl font-bold text-white"
               >
-                {BRAND.name}
-                <span className="text-cyan" aria-hidden>
-                  ·
-                </span>
+                <NexquoraLogo />
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}

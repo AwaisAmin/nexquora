@@ -6,6 +6,7 @@ import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/actions/auth";
 import { ADMIN_NAV } from "@/app/admin/_nav";
+import NexquoraLogo from "@/components/icons/NexquoraLogo";
 
 export default function AdminMobileNav() {
   const [open, setOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function AdminMobileNav() {
     <>
       {/* Top bar — mobile only */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/8 bg-bg-card px-4 py-3 md:hidden">
-        <span className="font-syne text-lg font-bold text-cyan">Nexquora</span>
+        <NexquoraLogo iconSize={28} />
         <button
           onClick={() => setOpen(true)}
           className="cursor-pointer rounded-lg p-1.5 text-muted transition-colors hover:bg-white/5 hover:text-white"
@@ -48,10 +49,8 @@ export default function AdminMobileNav() {
         {/* Drawer header */}
         <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
           <div>
-            <span className="font-syne text-lg font-bold text-cyan">
-              Nexquora
-            </span>
-            <p className="text-xs text-muted">Admin</p>
+            <NexquoraLogo iconSize={28} />
+            <p className="mt-1 text-xs text-muted">Admin Panel</p>
           </div>
           <button
             onClick={close}

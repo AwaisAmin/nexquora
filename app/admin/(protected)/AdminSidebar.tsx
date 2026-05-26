@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/actions/auth";
 import { ADMIN_NAV } from "@/app/admin/_nav";
+import NexquoraLogo from "@/components/icons/NexquoraLogo";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -13,9 +14,9 @@ export default function AdminSidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-white/8 bg-bg-card md:flex">
-      <div className="border-b border-white/8 px-6 py-5">
-        <span className="font-syne text-lg font-bold text-cyan">Nexquora</span>
-        <p className="mt-0.5 text-xs text-muted">Admin</p>
+      <div className="border-b border-white/8 px-4 py-4">
+        <NexquoraLogo iconSize={28} />
+        <p className="mt-1 text-xs text-muted">Admin Panel</p>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 p-3">
