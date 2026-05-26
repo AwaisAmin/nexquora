@@ -51,7 +51,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const base =
   "inline-flex items-center justify-center font-medium whitespace-nowrap select-none cursor-pointer " +
-  "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed " +
+  "disabled:opacity-50 disabled:cursor-not-allowed " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary";
 
 const hoverMotion = { scale: 1.03 } as const;
