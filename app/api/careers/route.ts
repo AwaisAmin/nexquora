@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { createElement } from "react";
-import { contactSchema } from "@/lib/schemas/contact";
+import { applicationSchema } from "@/lib/schemas/application";
 import { db } from "@/lib/db";
 import { sendEmail, ADMIN } from "@/lib/email";
-import ContactNotification from "@/lib/email/templates/ContactNotification";
-import ContactConfirmation from "@/lib/email/templates/ContactConfirmation";
+import ApplicationNotification from "@/lib/email/templates/ApplicationNotification";
+import ApplicationConfirmation from "@/lib/email/templates/ApplicationConfirmation";
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const result = contactSchema.safeParse(body);
+  const result = applicationSchema.safeParse(body);
   if (!result.success) {
     return NextResponse.json(
       { error: "Invalid form data", issues: result.error.issues },
@@ -25,33 +25,34 @@ export async function POST(req: Request) {
   const data = result.data;
 
   // 1. Save to database
-  await db.contact.create({
+  await db.application.create({
     data: {
+      jobId: data.jobId,
+      jobTitle: data.jobTitle,
       name: data.name,
       email: data.email,
-      company: data.company,
-      service: data.service,
-      budget: data.budget,
       message: data.message,
-      role: data.role,
     },
   });
 
   // 2. Send emails in parallel
   await Promise.all([
-    // Admin notification
     sendEmail({
       to: ADMIN,
-      subject: `New contact from ${data.name} — ${data.service}`,
-      template: createElement(ContactNotification, data),
+      subject: `New application for ${data.jobTitle} — ${data.name}`,
+      template: createElement(ApplicationNotification, {
+        name: data.name,
+        email: data.email,
+        jobTitle: data.jobTitle,
+        message: data.message,
+      }),
     }),
-    // User confirmation
     sendEmail({
       to: data.email,
-      subject: "We received your message — Nexquora",
-      template: createElement(ContactConfirmation, {
+      subject: `Application received — ${data.jobTitle}`,
+      template: createElement(ApplicationConfirmation, {
         name: data.name,
-        service: data.service,
+        jobTitle: data.jobTitle,
       }),
     }),
   ]);

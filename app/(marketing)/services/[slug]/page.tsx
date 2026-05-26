@@ -1,57 +1,62 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { Check, ArrowRight } from 'lucide-react'
-import ServiceIcon from '@/components/icons/ServiceIcon'
-import Accordion from '@/components/ui/Accordion'
-import { SERVICES, getServicesBySlug, getServiceUrl } from '@/lib/data/services'
-import { ROUTES } from '@/lib/routes'
-import { BRAND } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { Check, ArrowRight } from "lucide-react";
+import ServiceIcon from "@/components/icons/ServiceIcon";
+import Accordion from "@/components/ui/Accordion";
+import {
+  SERVICES,
+  getServicesBySlug,
+  getServiceUrl,
+} from "@/lib/data/services";
+import { ROUTES } from "@/lib/routes";
+import { BRAND } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
-  const slugs = [...new Set(SERVICES.map((s) => s.slug))]
-  return slugs.map((slug) => ({ slug }))
+  const slugs = [...new Set(SERVICES.map((s) => s.slug))];
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params
-  const services = getServicesBySlug(slug)
-  if (services.length === 0) return {}
-  const primary = services[0]
+  const { slug } = await params;
+  const services = getServicesBySlug(slug);
+  if (services.length === 0) return {};
+  const primary = services[0];
   return {
     title: `${primary.title} — ${BRAND.name}`,
     description: primary.description,
-  }
+  };
 }
 
 export default async function ServiceDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params
-  const services = getServicesBySlug(slug)
-  if (services.length === 0) notFound()
+  const { slug } = await params;
+  const services = getServicesBySlug(slug);
+  if (services.length === 0) notFound();
 
-  const isMulti = services.length > 1
-  const primary  = services[0]
+  const isMulti = services.length > 1;
+  const primary = services[0];
 
   // Combined FAQ — deduplicated across all services for this slug
-  const allFaq = services.flatMap((s) => s.faq)
+  const allFaq = services.flatMap((s) => s.faq);
 
   return (
     <div className="min-h-screen pt-24">
-
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg relative overflow-hidden py-24">
         <div
           className="pointer-events-none absolute right-0 top-0 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/3 rounded-full opacity-10 blur-3xl"
-          style={{ background: `radial-gradient(circle, ${primary.accentHex}, transparent)` }}
+          style={{
+            background: `radial-gradient(circle, ${primary.accentHex}, transparent)`,
+          }}
           aria-hidden
         />
 
@@ -73,16 +78,21 @@ export default async function ServiceDetailPage({
             className="font-syne text-xs font-semibold uppercase tracking-[0.2em]"
             style={{ color: primary.accentHex }}
           >
-            {isMulti ? 'Finance & Operations' : primary.tagline}
+            {isMulti ? "Finance & Operations" : primary.tagline}
           </p>
 
           <h1 className="mt-4 font-syne text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
             {isMulti ? (
-              <>Finance &amp; <span className="gradient-text-gold">Operations</span></>
+              <>
+                Finance &amp;{" "}
+                <span className="gradient-text-gold">Operations</span>
+              </>
             ) : (
               <>
-                {primary.title.split(' ').slice(0, -1).join(' ')}{' '}
-                <span className="gradient-text">{primary.title.split(' ').slice(-1)}</span>
+                {primary.title.split(" ").slice(0, -1).join(" ")}{" "}
+                <span className="gradient-text">
+                  {primary.title.split(" ").slice(-1)}
+                </span>
               </>
             )}
           </h1>
@@ -95,7 +105,10 @@ export default async function ServiceDetailPage({
             <Link
               href={ROUTES.contact}
               className="inline-flex h-12 items-center gap-2 rounded-lg px-7 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
-              style={{ background: primary.accentHex, boxShadow: `0 0 24px ${primary.accentHex}4D` }}
+              style={{
+                background: primary.accentHex,
+                boxShadow: `0 0 24px ${primary.accentHex}4D`,
+              }}
             >
               Start a project <ArrowRight size={16} aria-hidden />
             </Link>
@@ -111,9 +124,14 @@ export default async function ServiceDetailPage({
 
       {/* ── Features + CTA ────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className={cn('grid gap-16', isMulti ? 'lg:grid-cols-2' : 'lg:grid-cols-5')}>
+        <div
+          className={cn(
+            "grid gap-16",
+            isMulti ? "lg:grid-cols-2" : "lg:grid-cols-5",
+          )}
+        >
           {services.map((service) => (
-            <div key={service.id} className={cn(!isMulti && 'lg:col-span-3')}>
+            <div key={service.id} className={cn(!isMulti && "lg:col-span-3")}>
               {isMulti && (
                 <h2
                   className="mb-6 font-syne text-2xl font-bold"
@@ -132,7 +150,9 @@ export default async function ServiceDetailPage({
                       style={{ color: service.accentHex }}
                       aria-hidden
                     />
-                    <span className="text-sm leading-relaxed text-muted">{feature}</span>
+                    <span className="text-sm leading-relaxed text-muted">
+                      {feature}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -160,9 +180,12 @@ export default async function ServiceDetailPage({
           {!isMulti && (
             <div className="lg:col-span-2">
               <div className="glass-card sticky top-24 p-8">
-                <h3 className="font-syne text-lg font-bold text-white">Ready to get started?</h3>
+                <h3 className="font-syne text-lg font-bold text-white">
+                  Ready to get started?
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Tell us about your project — we&apos;ll respond within 24 hours with a clear proposal.
+                  Tell us about your project — we&apos;ll respond within 24
+                  hours with a clear proposal.
                 </p>
 
                 {primary.caseStudyTeaser && (
@@ -177,7 +200,10 @@ export default async function ServiceDetailPage({
                 <Link
                   href={ROUTES.contact}
                   className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
-                  style={{ background: primary.accentHex, boxShadow: `0 0 20px ${primary.accentHex}40` }}
+                  style={{
+                    background: primary.accentHex,
+                    boxShadow: `0 0 20px ${primary.accentHex}40`,
+                  }}
                 >
                   Start the conversation <ArrowRight size={14} aria-hidden />
                 </Link>
@@ -193,7 +219,9 @@ export default async function ServiceDetailPage({
           <h2 className="mb-2 font-syne text-2xl font-bold text-white">
             Common questions
           </h2>
-          <p className="mb-10 text-sm text-muted">Everything you need to know before we start.</p>
+          <p className="mb-10 text-sm text-muted">
+            Everything you need to know before we start.
+          </p>
 
           <Accordion items={allFaq} accentHex={primary.accentHex} />
 
@@ -202,7 +230,10 @@ export default async function ServiceDetailPage({
             <Link
               href={ROUTES.contact}
               className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors hover:brightness-110"
-              style={{ borderColor: primary.accentHex, color: primary.accentHex }}
+              style={{
+                borderColor: primary.accentHex,
+                color: primary.accentHex,
+              }}
             >
               Ask us directly <ArrowRight size={14} aria-hidden />
             </Link>
@@ -238,5 +269,5 @@ export default async function ServiceDetailPage({
         </div>
       </section>
     </div>
-  )
+  );
 }

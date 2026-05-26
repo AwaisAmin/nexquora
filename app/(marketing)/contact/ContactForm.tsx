@@ -1,82 +1,96 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, CheckCircle, Loader2, AlertCircle } from 'lucide-react'
-import { contactSchema } from '@/lib/schemas/contact'
-import { CONTACT_SERVICES, BUDGET_RANGES } from '@/lib/data/contact'
-import { cn } from '@/lib/utils'
-import type { ContactFormData } from '@/lib/schemas/contact'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { contactSchema } from "@/lib/schemas/contact";
+import { CONTACT_SERVICES, BUDGET_RANGES } from "@/lib/data/contact";
+import { cn } from "@/lib/utils";
+import type { ContactFormData } from "@/lib/schemas/contact";
 
-type FormState = 'idle' | 'submitting' | 'success' | 'error'
-type FieldErrors = Partial<Record<keyof ContactFormData, string[]>>
+type FormState = "idle" | "submitting" | "success" | "error";
+type FieldErrors = Partial<Record<keyof ContactFormData, string[]>>;
 
 interface ContactFormProps {
-  prefillService?: string
-  prefillRole?: string
+  prefillService?: string;
+  prefillRole?: string;
 }
 
-export default function ContactForm({ prefillService = '', prefillRole = '' }: ContactFormProps) {
-  const [state, setState]           = useState<FormState>('idle')
-  const [errors, setErrors]         = useState<FieldErrors>({})
-  const [serverError, setServerError] = useState('')
+export default function ContactForm({
+  prefillService = "",
+  prefillRole = "",
+}: ContactFormProps) {
+  const [state, setState] = useState<FormState>("idle");
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [serverError, setServerError] = useState("");
 
   function clearError(field: keyof ContactFormData) {
     setErrors((prev) => {
-      if (!prev[field]) return prev
-      const next = { ...prev }
-      delete next[field]
-      return next
-    })
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const fd = new FormData(e.currentTarget)
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
 
     const raw = {
-      name:    fd.get('name') as string,
-      email:   fd.get('email') as string,
-      company: (fd.get('company') as string) || undefined,
-      service: fd.get('service') as string,
-      budget:  (fd.get('budget') as string) || undefined,
-      role:    prefillRole || undefined,
-      message: fd.get('message') as string,
-    }
+      name: fd.get("name") as string,
+      email: fd.get("email") as string,
+      company: (fd.get("company") as string) || undefined,
+      service: fd.get("service") as string,
+      budget: (fd.get("budget") as string) || undefined,
+      role: prefillRole || undefined,
+      message: fd.get("message") as string,
+    };
 
-    const result = contactSchema.safeParse(raw)
+    const result = contactSchema.safeParse(raw);
     if (!result.success) {
-      setErrors(result.error.flatten().fieldErrors)
-      return
+      const fieldErrors: FieldErrors = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof ContactFormData;
+        if (key)
+          fieldErrors[key] = [...(fieldErrors[key] ?? []), issue.message];
+      }
+      setErrors(fieldErrors);
+      return;
     }
 
-    setErrors({})
-    setState('submitting')
+    setErrors({});
+    setState("submitting");
 
     try {
-      const res = await fetch('/api/contact', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(result.data),
-      })
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result.data),
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        setServerError((data as { error?: string }).error ?? 'Something went wrong. Please try again.')
-        setState('error')
-        return
+        const data = await res.json().catch(() => ({}));
+        setServerError(
+          (data as { error?: string }).error ??
+            "Something went wrong. Please try again.",
+        );
+        setState("error");
+        return;
       }
 
-      setState('success')
+      setState("success");
     } catch {
-      setServerError('Network error. Please check your connection and try again.')
-      setState('error')
+      setServerError(
+        "Network error. Please check your connection and try again.",
+      );
+      setState("error");
     }
   }
 
   return (
     <AnimatePresence mode="wait">
-      {state === 'success' ? (
+      {state === "success" ? (
         <motion.div
           key="success"
           initial={{ opacity: 0, scale: 0.96, y: 16 }}
@@ -87,22 +101,34 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.15, type: 'spring', stiffness: 280, damping: 20 }}
+            transition={{
+              delay: 0.15,
+              type: "spring",
+              stiffness: 280,
+              damping: 20,
+            }}
             className="flex h-20 w-20 items-center justify-center rounded-full bg-cyan/10"
           >
             <CheckCircle size={40} className="text-cyan" aria-hidden />
           </motion.div>
 
           <div>
-            <h3 className="font-syne text-2xl font-bold text-white">Message sent!</h3>
+            <h3 className="font-syne text-2xl font-bold text-white">
+              Message sent!
+            </h3>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted">
-              Thanks for reaching out. We&apos;ll review your project and get back to you within 24 hours.
+              Thanks for reaching out. We&apos;ll review your project and get
+              back to you within 24 hours.
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() => { setState('idle'); setErrors({}); setServerError('') }}
+            onClick={() => {
+              setState("idle");
+              setErrors({});
+              setServerError("");
+            }}
             className="cursor-pointer text-sm text-muted underline-offset-4 transition-colors hover:text-white hover:underline"
           >
             Send another message
@@ -125,7 +151,7 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
                 placeholder="Alex Johnson"
                 required
                 autoComplete="name"
-                onChange={() => clearError('name')}
+                onChange={() => clearError("name")}
                 className={inputCls(!!errors.name)}
               />
             </Field>
@@ -136,7 +162,7 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
                 placeholder="alex@company.com"
                 required
                 autoComplete="email"
-                onChange={() => clearError('email')}
+                onChange={() => clearError("email")}
                 className={inputCls(!!errors.email)}
               />
             </Field>
@@ -150,7 +176,7 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
                 type="text"
                 placeholder="Acme Inc."
                 autoComplete="organization"
-                onChange={() => clearError('company')}
+                onChange={() => clearError("company")}
                 className={inputCls(!!errors.company)}
               />
             </Field>
@@ -159,12 +185,19 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
                 name="service"
                 required
                 defaultValue={prefillService}
-                onChange={() => clearError('service')}
-                className={cn(inputCls(!!errors.service), 'cursor-pointer bg-bg-card')}
+                onChange={() => clearError("service")}
+                className={cn(
+                  inputCls(!!errors.service),
+                  "cursor-pointer bg-bg-card",
+                )}
               >
-                <option value="" disabled>Select a service…</option>
+                <option value="" disabled>
+                  Select a service…
+                </option>
                 {CONTACT_SERVICES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -175,11 +208,13 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
             <select
               name="budget"
               defaultValue=""
-              className={cn(inputCls(false), 'cursor-pointer bg-bg-card')}
+              className={cn(inputCls(false), "cursor-pointer bg-bg-card")}
             >
               <option value="">Not decided yet</option>
               {BUDGET_RANGES.map((r) => (
-                <option key={r} value={r}>{r}</option>
+                <option key={r} value={r}>
+                  {r}
+                </option>
               ))}
             </select>
           </Field>
@@ -189,10 +224,10 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
             <textarea
               name="message"
               rows={5}
-              placeholder="Describe what you&apos;re building, your goals, and timeline…"
+              placeholder="Describe what you're building, your goals, and timeline…"
               required
-              onChange={() => clearError('message')}
-              className={cn(inputCls(!!errors.message), 'resize-none')}
+              onChange={() => clearError("message")}
+              className={cn(inputCls(!!errors.message), "resize-none")}
             />
           </Field>
 
@@ -204,19 +239,23 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
           )}
 
           {/* Server error */}
-          {state === 'error' && serverError && (
+          {state === "error" && serverError && (
             <div className="flex items-start gap-2.5 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3">
-              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-400" aria-hidden />
+              <AlertCircle
+                size={16}
+                className="mt-0.5 shrink-0 text-red-400"
+                aria-hidden
+              />
               <p className="text-sm text-red-400">{serverError}</p>
             </div>
           )}
 
           <button
             type="submit"
-            disabled={state === 'submitting'}
+            disabled={state === "submitting"}
             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-cyan py-3.5 text-sm font-semibold text-bg-primary shadow-[0_0_24px_rgba(0,245,255,0.3)] transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {state === 'submitting' ? (
+            {state === "submitting" ? (
               <>
                 <Loader2 size={16} className="animate-spin" aria-hidden />
                 Sending…
@@ -234,7 +273,7 @@ export default function ContactForm({ prefillService = '', prefillRole = '' }: C
         </motion.form>
       )}
     </AnimatePresence>
-  )
+  );
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -245,10 +284,10 @@ function Field({
   error,
   children,
 }: {
-  label: string
-  hint?: string
-  error?: string
-  children: React.ReactNode
+  label: string;
+  hint?: string;
+  error?: string;
+  children: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -259,14 +298,14 @@ function Field({
       {children}
       {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
-  )
+  );
 }
 
 function inputCls(hasError: boolean): string {
   return cn(
-    'w-full rounded-lg border px-4 py-2.5 text-sm text-white placeholder:text-white/30',
-    'bg-bg-card/50 outline-none transition-colors',
-    'focus:border-cyan/50 focus:bg-bg-card focus:ring-1 focus:ring-cyan/20',
-    hasError ? 'border-red-500/40' : 'border-white/8 hover:border-white/15',
-  )
+    "w-full rounded-lg border px-4 py-2.5 text-sm text-white placeholder:text-white/30",
+    "bg-bg-card/50 outline-none transition-colors",
+    "focus:border-cyan/50 focus:bg-bg-card focus:ring-1 focus:ring-cyan/20",
+    hasError ? "border-red-500/40" : "border-white/8 hover:border-white/15",
+  );
 }
