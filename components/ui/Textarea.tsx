@@ -1,46 +1,54 @@
-import { forwardRef, useId } from 'react'
-import { cn } from '@/lib/utils'
+import { forwardRef, useId } from "react";
+import { cn } from "@/lib/utils";
 
-type TextareaProps = {
-  label?:     string
-  error?:     string
-  className?: string
-} & Omit<React.ComponentPropsWithoutRef<'textarea'>, 'className'>
+interface TextareaProps extends Omit<
+  React.ComponentPropsWithoutRef<"textarea">,
+  "className"
+> {
+  label?: string;
+  hint?: string;
+  error?: string;
+  resize?: boolean;
+  className?: string;
+}
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, className, id: idProp, ...props }, ref) => {
-    const generatedId = useId()
-    const id = idProp ?? generatedId
+  (
+    { label, hint, error, resize = false, className, id: idProp, ...props },
+    ref,
+  ) => {
+    const generatedId = useId();
+    const id = idProp ?? generatedId;
 
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label
-            htmlFor={id}
-            className="text-sm font-medium text-white/80"
-          >
-            {label}
-            {props.required && (
-              <span className="ml-1 text-cyan" aria-hidden>
-                *
-              </span>
-            )}
-          </label>
+          <div className="flex items-center justify-between">
+            <label htmlFor={id} className="text-xs font-semibold text-white/80">
+              {label}
+              {props.required && (
+                <span className="ml-1 text-cyan" aria-hidden>
+                  *
+                </span>
+              )}
+            </label>
+            {hint && <span className="text-xs text-muted">{hint}</span>}
+          </div>
         )}
 
         <textarea
           ref={ref}
           id={id}
           className={cn(
-            'w-full rounded-lg bg-bg-card px-4 py-3 text-sm text-white',
-            'border border-white/8',
-            'placeholder:text-muted',
-            'outline-none ring-0',
-            'focus:border-cyan/50 focus:ring-1 focus:ring-cyan/30',
-            'transition-colors duration-150',
-            'resize-y min-h-[120px]',
-            error && 'border-red-500/60 focus:border-red-500 focus:ring-red-500/30',
-            'disabled:cursor-not-allowed disabled:opacity-50',
+            "w-full rounded-lg border px-4 py-2.5 text-sm text-white",
+            "bg-bg-card/60 placeholder:text-white/30",
+            "outline-none transition-colors duration-150",
+            "focus:border-cyan/50 focus:ring-1 focus:ring-cyan/20",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            resize ? "resize-y min-h-25" : "resize-none",
+            error
+              ? "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20"
+              : "border-white/10 hover:border-white/20",
             className,
           )}
           aria-invalid={error ? true : undefined}
@@ -49,14 +57,14 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         />
 
         {error && (
-          <p id={`${id}-error`} className="text-xs text-red-400" role="alert">
+          <p id={`${id}-error`} role="alert" className="text-xs text-red-400">
             {error}
           </p>
         )}
       </div>
-    )
+    );
   },
-)
+);
 
-Textarea.displayName = 'Textarea'
-export default Textarea
+Textarea.displayName = "Textarea";
+export default Textarea;

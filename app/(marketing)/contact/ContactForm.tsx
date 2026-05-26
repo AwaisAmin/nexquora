@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
 import { contactSchema } from "@/lib/schemas/contact";
 import { CONTACT_SERVICES, BUDGET_RANGES } from "@/lib/data/contact";
-import { cn } from "@/lib/utils";
+import { Input, Textarea, Select, Button } from "@/components/ui";
 import type { ContactFormData } from "@/lib/schemas/contact";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -33,7 +33,7 @@ export default function ContactForm({
     });
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
 
@@ -144,94 +144,86 @@ export default function ContactForm({
         >
           {/* Name + Email */}
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Name" error={errors.name?.[0]}>
-              <input
-                name="name"
-                type="text"
-                placeholder="Alex Johnson"
-                required
-                autoComplete="name"
-                onChange={() => clearError("name")}
-                className={inputCls(!!errors.name)}
-              />
-            </Field>
-            <Field label="Email" error={errors.email?.[0]}>
-              <input
-                name="email"
-                type="email"
-                placeholder="alex@company.com"
-                required
-                autoComplete="email"
-                onChange={() => clearError("email")}
-                className={inputCls(!!errors.email)}
-              />
-            </Field>
+            <Input
+              name="name"
+              type="text"
+              label="Name"
+              placeholder="Alex Johnson"
+              required
+              autoComplete="name"
+              error={errors.name?.[0]}
+              onChange={() => clearError("name")}
+            />
+            <Input
+              name="email"
+              type="email"
+              label="Email"
+              placeholder="alex@company.com"
+              required
+              autoComplete="email"
+              error={errors.email?.[0]}
+              onChange={() => clearError("email")}
+            />
           </div>
 
           {/* Company + Service */}
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Company" hint="Optional" error={errors.company?.[0]}>
-              <input
-                name="company"
-                type="text"
-                placeholder="Acme Inc."
-                autoComplete="organization"
-                onChange={() => clearError("company")}
-                className={inputCls(!!errors.company)}
-              />
-            </Field>
-            <Field label="Service" error={errors.service?.[0]}>
-              <select
-                name="service"
-                required
-                defaultValue={prefillService}
-                onChange={() => clearError("service")}
-                className={cn(
-                  inputCls(!!errors.service),
-                  "cursor-pointer bg-bg-card",
-                )}
-              >
-                <option value="" disabled>
-                  Select a service…
+            <Input
+              name="company"
+              type="text"
+              label="Company"
+              hint="Optional"
+              placeholder="Acme Inc."
+              autoComplete="organization"
+              error={errors.company?.[0]}
+              onChange={() => clearError("company")}
+            />
+            <Select
+              name="service"
+              label="Service"
+              required
+              defaultValue={prefillService}
+              error={errors.service?.[0]}
+              onChange={() => clearError("service")}
+            >
+              <option value="" disabled>
+                Select a service…
+              </option>
+              {CONTACT_SERVICES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
                 </option>
-                {CONTACT_SERVICES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </Field>
+              ))}
+            </Select>
           </div>
 
           {/* Budget */}
-          <Field label="Budget range" hint="Optional">
-            <select
-              name="budget"
-              defaultValue=""
-              className={cn(inputCls(false), "cursor-pointer bg-bg-card")}
-            >
-              <option value="">Not decided yet</option>
-              {BUDGET_RANGES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-          </Field>
+          <Select
+            name="budget"
+            label="Budget range"
+            hint="Optional"
+            defaultValue=""
+          >
+            <option value="">Not decided yet</option>
+            {BUDGET_RANGES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </Select>
 
           {/* Message */}
-          <Field label="Tell us about your project" error={errors.message?.[0]}>
-            <textarea
-              name="message"
-              rows={5}
-              placeholder="Describe what you're building, your goals, and timeline…"
-              required
-              onChange={() => clearError("message")}
-              className={cn(inputCls(!!errors.message), "resize-none")}
-            />
-          </Field>
+          <Textarea
+            name="message"
+            label="Tell us about your project"
+            rows={5}
+            placeholder="Describe what you're building, your goals, and timeline…"
+            required
+            error={errors.message?.[0]}
+            onChange={() => clearError("message")}
+          />
 
-          {/* Role hint (careers apply flow) */}
+          {/* Role hint */}
           {prefillRole && (
             <p className="rounded-lg border border-cyan/20 bg-cyan/5 px-4 py-2.5 text-xs text-cyan">
               Applying for: <span className="font-semibold">{prefillRole}</span>
@@ -250,22 +242,14 @@ export default function ContactForm({
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
-            disabled={state === "submitting"}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-cyan py-3.5 text-sm font-semibold text-bg-primary shadow-[0_0_24px_rgba(0,245,255,0.3)] transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            size="lg"
+            loading={state === "submitting"}
+            className="w-full"
           >
-            {state === "submitting" ? (
-              <>
-                <Loader2 size={16} className="animate-spin" aria-hidden />
-                Sending…
-              </>
-            ) : (
-              <>
-                Send message <ArrowRight size={16} aria-hidden />
-              </>
-            )}
-          </button>
+            Send message <ArrowRight size={16} aria-hidden />
+          </Button>
 
           <p className="text-center text-xs text-muted">
             We respond within 24 hours · NDA available on request
@@ -273,39 +257,5 @@ export default function ContactForm({
         </motion.form>
       )}
     </AnimatePresence>
-  );
-}
-
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-function Field({
-  label,
-  hint,
-  error,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold text-white/80">{label}</label>
-        {hint && <span className="text-xs text-muted">{hint}</span>}
-      </div>
-      {children}
-      {error && <p className="text-xs text-red-400">{error}</p>}
-    </div>
-  );
-}
-
-function inputCls(hasError: boolean): string {
-  return cn(
-    "w-full rounded-lg border px-4 py-2.5 text-sm text-white placeholder:text-white/30",
-    "bg-bg-card/50 outline-none transition-colors",
-    "focus:border-cyan/50 focus:bg-bg-card focus:ring-1 focus:ring-cyan/20",
-    hasError ? "border-red-500/40" : "border-white/8 hover:border-white/15",
   );
 }
