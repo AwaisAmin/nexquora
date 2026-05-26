@@ -43,7 +43,8 @@ export default async function ServicesPage() {
         )}
 
         {services.length > 0 && (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-140 text-sm">
             <thead>
               <tr className="border-b border-white/8 text-left">
                 <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-muted">
@@ -102,6 +103,7 @@ export default async function ServicesPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

@@ -91,7 +91,7 @@ export default function Navbar({ services }: { services: Service[] }) {
       <header
         className={cn(
           "fixed left-0 right-0 top-0 z-50 motion-reduce:transition-none",
-          "transition-[background,border-color,backdrop-filter] duration-300",
+          "relative transition-[background,border-color,backdrop-filter] duration-300",
           scrolled
             ? "border-b border-white/8 bg-bg-secondary/80 backdrop-blur-md"
             : "bg-transparent",
@@ -117,12 +117,8 @@ export default function Navbar({ services }: { services: Service[] }) {
 
           {/* ── Desktop links ──────────────────────────────────────────────── */}
           <div className="hidden items-center gap-8 lg:flex">
-            {/* Services mega-dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={openMega}
-              onMouseLeave={closeMega}
-            >
+            {/* Services trigger — panel is lifted to header level */}
+            <div onMouseEnter={openMega} onMouseLeave={closeMega}>
               <button
                 className={cn(
                   "flex items-center gap-1 text-sm transition-colors duration-150 hover:text-white",
@@ -134,53 +130,6 @@ export default function Navbar({ services }: { services: Service[] }) {
                 Services
                 <ChevronDown size={14} strokeWidth={2.5} aria-hidden />
               </button>
-
-              {/* Mega panel — always mounted, GSAP controls autoAlpha */}
-              <div
-                ref={megaRef}
-                className="absolute -left-8 top-full pt-3"
-                style={{ visibility: "hidden", opacity: 0 }}
-                role="menu"
-                aria-label="Services"
-              >
-                <div className="w-175 rounded-2xl border border-white/8 bg-bg-secondary/95 p-6 shadow-2xl backdrop-blur-xl">
-                  <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                    What We Build
-                  </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {services.map((service) => (
-                      <Link
-                        key={service.id}
-                        href={getServiceUrl(service)}
-                        role="menuitem"
-                        className="group flex items-start gap-3 rounded-xl p-3 transition-colors duration-150 hover:bg-white/5"
-                        onClick={closeMega}
-                      >
-                        <span
-                          className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                          style={{ background: `${service.accentHex}1A` }}
-                          aria-hidden
-                        >
-                          <ServiceIcon
-                            name={service.icon}
-                            size={16}
-                            strokeWidth={1.8}
-                            style={{ color: service.accentHex }}
-                          />
-                        </span>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-white/90 transition-colors group-hover:text-white">
-                            {service.title}
-                          </p>
-                          <p className="mt-0.5 truncate text-xs leading-snug text-muted">
-                            {service.tagline}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
 
             {NAV_LINKS.map(({ label, href }) => (
@@ -211,6 +160,57 @@ export default function Navbar({ services }: { services: Service[] }) {
             <Menu size={20} aria-hidden />
           </button>
         </nav>
+
+        {/* ── Mega panel — positioned relative to header so it never overflows ── */}
+        <div
+          ref={megaRef}
+          className="absolute inset-x-0 top-full z-50 hidden lg:block"
+          onMouseEnter={openMega}
+          onMouseLeave={closeMega}
+          style={{ visibility: "hidden", opacity: 0 }}
+          role="menu"
+          aria-label="Services"
+        >
+          <div className="mx-auto max-w-7xl px-6 pb-4 pt-2">
+            <div className="rounded-2xl border border-white/8 bg-bg-secondary/95 p-6 shadow-2xl backdrop-blur-xl">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                What We Build
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {services.map((service) => (
+                  <Link
+                    key={service.id}
+                    href={getServiceUrl(service)}
+                    role="menuitem"
+                    className="group flex items-start gap-3 rounded-xl p-3 transition-colors duration-150 hover:bg-white/5"
+                    onClick={closeMega}
+                  >
+                    <span
+                      className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                      style={{ background: `${service.accentHex}1A` }}
+                      aria-hidden
+                    >
+                      <ServiceIcon
+                        name={service.icon}
+                        size={16}
+                        strokeWidth={1.8}
+                        style={{ color: service.accentHex }}
+                      />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-white/90 transition-colors group-hover:text-white">
+                        {service.title}
+                      </p>
+                      <p className="mt-0.5 truncate text-xs leading-snug text-muted">
+                        {service.tagline}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
 
       {/* ── Mobile overlay ──────────────────────────────────────────────────── */}
