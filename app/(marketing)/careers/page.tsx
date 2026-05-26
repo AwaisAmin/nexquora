@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function CareersPage() {
   const jobs = await getPublishedJobs();
   return (
-    <div className="min-h-screen pt-24">
+    <div className="min-h-screen sm:pt-24">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg py-24 text-center">
         <div className="mx-auto max-w-3xl px-6">

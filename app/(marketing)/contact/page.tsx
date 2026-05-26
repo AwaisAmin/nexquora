@@ -17,7 +17,7 @@ export default async function ContactPage({
   const { service } = await searchParams
 
   return (
-    <div className="min-h-screen pt-24">
+    <div className="min-h-screen sm:pt-24">
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg py-24">

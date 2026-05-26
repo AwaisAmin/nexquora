@@ -34,7 +34,7 @@ const CULTURE_ICON_MAP: Record<string, LucideIcon> = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen pt-24">
+    <div className="min-h-screen sm:pt-24">
       {/* ── Hero ──────────────────────────────────────────────────────────────── */}
       <section className="grid-bg relative overflow-hidden py-28 text-center">
         <div
