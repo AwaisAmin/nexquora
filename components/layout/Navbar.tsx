@@ -152,7 +152,7 @@ export default function Navbar({ services }: { services: Service[] }) {
 
           {/* Mobile hamburger */}
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition-colors hover:text-white lg:hidden"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted transition-colors hover:text-white lg:hidden"
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
             aria-expanded={mobileOpen}
@@ -240,14 +240,14 @@ export default function Navbar({ services }: { services: Service[] }) {
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted hover:text-white"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted hover:text-white"
                 aria-label="Close navigation"
               >
                 <X size={20} aria-hidden />
               </button>
             </div>
 
-            <nav className="flex flex-1 flex-col justify-center overflow-y-auto px-6 py-8">
+            <nav className="flex flex-1 flex-col overflow-y-auto px-6 pb-8 pt-4">
               {/* Services grid */}
               <motion.div
                 custom={0}
