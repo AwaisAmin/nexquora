@@ -1,5 +1,6 @@
 import { verifySession } from "@/lib/dal";
 import AdminSidebar from "./AdminSidebar";
+import AdminMobileNav from "./AdminMobileNav";
 
 export default async function AdminLayout({
   children,
@@ -10,8 +11,16 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-bg-primary">
+      {/* Desktop sidebar — hidden on mobile */}
       <AdminSidebar />
-      <main className="flex-1 overflow-auto p-6 md:p-8">{children}</main>
+
+      {/* Main column */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Mobile top bar + drawer — hidden on md+ */}
+        <AdminMobileNav />
+
+        <main className="flex-1 p-4 md:p-8">{children}</main>
+      </div>
     </div>
   );
 }
