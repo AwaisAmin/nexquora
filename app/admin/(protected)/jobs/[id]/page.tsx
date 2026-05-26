@@ -17,29 +17,27 @@ export default async function EditJobPage({
   const action = updateJob.bind(null, id);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="space-y-6">
       <div>
         <h1 className="font-syne text-2xl font-bold text-white">Edit Job</h1>
         <p className="mt-1 text-sm text-muted">{job.title}</p>
       </div>
 
-      <div className="rounded-xl border border-white/8 bg-bg-card p-6">
-        <JobForm
-          action={action}
-          defaultValues={{
-            title: job.title,
-            department: job.department,
-            type: job.type,
-            location: job.location,
-            salary: job.salary,
-            description: job.description,
-            requirements: job.requirements,
-            niceToHave: job.niceToHave,
-            published: job.published,
-          }}
-          submitLabel="Save Changes"
-        />
-      </div>
+      <JobForm
+        action={action}
+        defaultValues={{
+          title: job.title,
+          department: job.department,
+          type: job.type,
+          location: job.location,
+          salary: job.salary,
+          description: job.description,
+          requirements: job.requirements,
+          niceToHave: job.niceToHave,
+          published: job.published,
+        }}
+        submitLabel="Save Changes"
+      />
     </div>
   );
 }

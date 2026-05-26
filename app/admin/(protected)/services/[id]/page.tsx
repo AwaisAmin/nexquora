@@ -19,7 +19,7 @@ export default async function EditServicePage({
   const action = updateService.bind(null, id);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="space-y-6">
       <div>
         <h1 className="font-syne text-2xl font-bold text-white">
           Edit Service
@@ -27,27 +27,25 @@ export default async function EditServicePage({
         <p className="mt-1 text-sm text-muted">{service.title}</p>
       </div>
 
-      <div className="rounded-xl border border-white/8 bg-bg-card p-6">
-        <ServiceForm
-          action={action}
-          defaultValues={{
-            slug: service.slug,
-            title: service.title,
-            tagline: service.tagline,
-            description: service.description,
-            longDescription: service.longDescription,
-            icon: service.icon,
-            accentHex: service.accentHex,
-            features: service.features,
-            tools: service.tools,
-            faqRaw: formatFaq(service.faq as unknown as FaqItem[]),
-            caseStudyTeaser: service.caseStudyTeaser ?? undefined,
-            published: service.published,
-            order: service.order,
-          }}
-          submitLabel="Save Changes"
-        />
-      </div>
+      <ServiceForm
+        action={action}
+        defaultValues={{
+          slug: service.slug,
+          title: service.title,
+          tagline: service.tagline,
+          description: service.description,
+          longDescription: service.longDescription,
+          icon: service.icon,
+          accentHex: service.accentHex,
+          features: service.features,
+          tools: service.tools,
+          faqRaw: formatFaq(service.faq as unknown as FaqItem[]),
+          caseStudyTeaser: service.caseStudyTeaser ?? undefined,
+          published: service.published,
+          order: service.order,
+        }}
+        submitLabel="Save Changes"
+      />
     </div>
   );
 }
