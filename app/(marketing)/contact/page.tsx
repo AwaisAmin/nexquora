@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string; service?: string }>
+  searchParams: Promise<{ service?: string }>
 }) {
-  const { role, service } = await searchParams
+  const { service } = await searchParams
 
   return (
     <div className="min-h-screen pt-24">
@@ -96,10 +96,7 @@ export default async function ContactPage({
 
             {/* ── Right: contact form ─────────────────────────────────────── */}
             <div className="glass-card p-8">
-              <ContactForm
-                prefillService={service ?? ''}
-                prefillRole={role ?? ''}
-              />
+              <ContactForm prefillService={service ?? ''} />
             </div>
 
           </div>

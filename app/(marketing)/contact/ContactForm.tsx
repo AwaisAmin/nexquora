@@ -13,12 +13,10 @@ type FieldErrors = Partial<Record<keyof ContactFormData, string[]>>;
 
 interface ContactFormProps {
   prefillService?: string;
-  prefillRole?: string;
 }
 
 export default function ContactForm({
   prefillService = "",
-  prefillRole = "",
 }: ContactFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -43,7 +41,7 @@ export default function ContactForm({
       company: (fd.get("company") as string) || undefined,
       service: fd.get("service") as string,
       budget: (fd.get("budget") as string) || undefined,
-      role: prefillRole || undefined,
+      role: undefined,
       message: fd.get("message") as string,
     };
 
@@ -222,13 +220,6 @@ export default function ContactForm({
             error={errors.message?.[0]}
             onChange={() => clearError("message")}
           />
-
-          {/* Role hint */}
-          {prefillRole && (
-            <p className="rounded-lg border border-cyan/20 bg-cyan/5 px-4 py-2.5 text-xs text-cyan">
-              Applying for: <span className="font-semibold">{prefillRole}</span>
-            </p>
-          )}
 
           {/* Server error */}
           {state === "error" && serverError && (

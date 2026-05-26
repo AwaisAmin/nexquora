@@ -28,7 +28,7 @@ export default async function CareerTeaser() {
         {featured.map((job) => (
           <Link
             key={job.id}
-            href={`${ROUTES.contact}?role=${encodeURIComponent(job.title)}`}
+            href={`${ROUTES.careers}#openings`}
             className="group flex items-center justify-between rounded-xl border border-white/8 bg-bg-card/50 px-6 py-4 transition-all hover:border-white/15 hover:bg-bg-card"
           >
             <div>
