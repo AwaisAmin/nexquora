@@ -17,7 +17,7 @@ export const metadata: Metadata = {
       "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
     url: "https://nexquora.com/services",
     siteName: BRAND.name,
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: `Services — ${BRAND.name}`,
     description:
       "AI, web, mobile, DevOps, fintech, and bookkeeping services — everything you need to build and scale a modern digital product.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
 };
 

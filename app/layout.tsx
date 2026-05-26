@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       'From AI automation to fintech platforms — Nexquora engineers digital products that scale, perform, and last.',
     url: 'https://nexquora.com',
     siteName: 'Nexquora',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: 'Nexquora — Build What\'s Next',
     description:
       'From AI automation to fintech platforms — Nexquora engineers digital products that scale, perform, and last.',
-    images: ['/og-image.png'],
+    images: ['/opengraph-image'],
   },
 }
 

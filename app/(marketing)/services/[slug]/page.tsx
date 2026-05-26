@@ -27,14 +27,14 @@ export async function generateMetadata({
       description: primary.description,
       url: `https://nexquora.com/services/${slug}`,
       siteName: BRAND.name,
-      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title: `${primary.title} — ${BRAND.name}`,
       description: primary.description,
-      images: ["/og-image.png"],
+      images: ["/opengraph-image"],
     },
   };
 }

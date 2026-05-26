@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Fintech engineering and bookkeeping services — payment systems, compliance automation, payroll, and clean books for growing companies.",
     url: "https://nexquora.com/services/finance",
     siteName: BRAND.name,
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: `Finance & Operations — ${BRAND.name}`,
     description:
       "Fintech engineering and bookkeeping services — payment systems, compliance automation, payroll, and clean books for growing companies.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
 };
 
