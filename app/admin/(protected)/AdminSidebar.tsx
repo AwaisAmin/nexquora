@@ -12,7 +12,7 @@ export default function AdminSidebar() {
   const [pending, startTransition] = useTransition();
 
   return (
-    <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-white/8 bg-bg-card">
+    <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-white/8 bg-bg-card md:flex">
       <div className="border-b border-white/8 px-6 py-5">
         <span className="font-syne text-lg font-bold text-cyan">Nexquora</span>
         <p className="mt-0.5 text-xs text-muted">Admin</p>
