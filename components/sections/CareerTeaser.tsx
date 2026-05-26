@@ -1,11 +1,11 @@
-import Link from 'next/link'
-import { ArrowRight, MapPin } from 'lucide-react'
-import SectionHeading from '@/components/ui/SectionHeading'
-import { JOBS } from '@/lib/data/jobs'
-import { ROUTES } from '@/lib/routes'
+import Link from "next/link";
+import { ArrowRight, MapPin } from "lucide-react";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { getFeaturedJobs } from "@/lib/dal";
+import { ROUTES } from "@/lib/routes";
 
-export default function CareerTeaser() {
-  const featured = JOBS.slice(0, 3)
+export default async function CareerTeaser() {
+  const featured = await getFeaturedJobs();
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
@@ -62,5 +62,5 @@ export default function CareerTeaser() {
         See all openings <ArrowRight size={14} aria-hidden />
       </Link>
     </section>
-  )
+  );
 }

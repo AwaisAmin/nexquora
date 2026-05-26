@@ -1,28 +1,158 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import { X, MapPin, DollarSign, Briefcase, ArrowRight, Check } from 'lucide-react'
-import { JOBS } from '@/lib/data/jobs'
-import { DEPT_ACCENT } from '@/lib/constants'
-import { ROUTES } from '@/lib/routes'
-import { cn } from '@/lib/utils'
-import type { Job, Department } from '@/lib/types'
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  MapPin,
+  DollarSign,
+  Briefcase,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+} from "lucide-react";
+import { DEPT_ACCENT } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { applyForJob } from "@/app/actions/apply";
+import type { Job, Department } from "@/lib/types";
 
-type TabValue = 'All' | Department
+type TabValue = "All" | Department;
 
-const TABS: TabValue[] = ['All', 'AI', 'Web', 'Mobile', 'DevOps', 'Finance']
-
-function tabCount(tab: TabValue): number {
-  return tab === 'All' ? JOBS.length : JOBS.filter((j) => j.department === tab).length
-}
+const TABS: TabValue[] = ["All", "AI", "Web", "Mobile", "DevOps", "Finance"];
 
 // ── Modal content ─────────────────────────────────────────────────────────────
 
-function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
-  const accent = DEPT_ACCENT[job.department]
+const inputCls =
+  "w-full rounded-lg border border-white/10 bg-bg-card px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-cyan/50 focus:ring-1 focus:ring-cyan/20 hover:border-white/20";
 
+function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
+  const [view, setView] = useState<"details" | "apply" | "success">("details");
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const accent = DEPT_ACCENT[job.department] ?? "#00F5FF";
+
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const fd = new FormData(e.currentTarget);
+    startTransition(async () => {
+      const res = await applyForJob(fd);
+      if (res.success) setView("success");
+      else setError(res.message ?? "Something went wrong.");
+    });
+  }
+
+  /* ── Success ── */
+  if (view === "success")
+    return (
+      <div className="flex flex-col items-center gap-4 py-12 text-center">
+        <span
+          className="flex h-14 w-14 items-center justify-center rounded-full"
+          style={{ background: `${accent}18` }}
+        >
+          <Check size={26} style={{ color: accent }} />
+        </span>
+        <h2 className="font-syne text-xl font-bold text-white">
+          Application sent!
+        </h2>
+        <p className="max-w-xs text-sm text-muted">
+          We&apos;ll review your application and get back to you soon.
+        </p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-2 cursor-pointer rounded-lg border border-white/8 px-6 py-2.5 text-sm text-muted transition-colors hover:border-white/15 hover:text-white"
+        >
+          Close
+        </button>
+      </div>
+    );
+
+  /* ── Apply form ── */
+  if (view === "apply")
+    return (
+      <>
+        <div className="mb-6 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setView("details")}
+            className="cursor-pointer rounded p-1 text-muted transition-colors hover:text-white"
+            aria-label="Back"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <h2 className="font-syne text-xl font-bold text-white">
+            Apply — {job.title}
+          </h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input type="hidden" name="jobId" value={job.id} />
+          <input type="hidden" name="jobTitle" value={job.title} />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-white/80">
+                Full name <span className="text-cyan">*</span>
+              </label>
+              <input
+                name="name"
+                required
+                placeholder="Jane Smith"
+                className={inputCls}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-white/80">
+                Email <span className="text-cyan">*</span>
+              </label>
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="jane@example.com"
+                className={inputCls}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-white/80">
+              Cover note <span className="text-cyan">*</span>
+            </label>
+            <textarea
+              name="message"
+              required
+              rows={4}
+              placeholder="Tell us why you're a great fit…"
+              className={cn(inputCls, "resize-none")}
+            />
+          </div>
+
+          {error && <p className="text-xs text-red-400">{error}</p>}
+
+          <div className="flex gap-3 border-t border-white/6 pt-4">
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-bg-primary transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+              style={{ background: accent, boxShadow: `0 0 20px ${accent}40` }}
+            >
+              {pending ? "Submitting…" : "Submit application"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("details")}
+              className="cursor-pointer rounded-lg border border-white/8 px-5 text-sm text-muted transition-colors hover:border-white/15 hover:text-white"
+            >
+              Back
+            </button>
+          </div>
+        </form>
+      </>
+    );
+
+  /* ── Job details ── */
   return (
     <>
       {/* Header */}
@@ -39,7 +169,9 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
               {job.type}
             </span>
           </div>
-          <h2 className="font-syne text-2xl font-bold text-white">{job.title}</h2>
+          <h2 className="font-syne text-2xl font-bold text-white">
+            {job.title}
+          </h2>
         </div>
         <button
           type="button"
@@ -69,11 +201,21 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
 
       {/* Requirements */}
       <div className="mt-6">
-        <h3 className="mb-3 font-syne text-sm font-bold text-white">Requirements</h3>
+        <h3 className="mb-3 font-syne text-sm font-bold text-white">
+          Requirements
+        </h3>
         <ul className="flex flex-col gap-2.5" role="list">
           {job.requirements.map((req) => (
-            <li key={req} className="flex items-start gap-2.5 text-sm text-muted">
-              <Check size={14} className="mt-0.5 shrink-0" style={{ color: accent }} aria-hidden />
+            <li
+              key={req}
+              className="flex items-start gap-2.5 text-sm text-muted"
+            >
+              <Check
+                size={14}
+                className="mt-0.5 shrink-0"
+                style={{ color: accent }}
+                aria-hidden
+              />
               {req}
             </li>
           ))}
@@ -83,10 +225,15 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
       {/* Nice to have */}
       {job.niceToHave && job.niceToHave.length > 0 && (
         <div className="mt-6">
-          <h3 className="mb-3 font-syne text-sm font-bold text-white">Nice to have</h3>
+          <h3 className="mb-3 font-syne text-sm font-bold text-white">
+            Nice to have
+          </h3>
           <ul className="flex flex-col gap-2.5" role="list">
             {job.niceToHave.map((item) => (
-              <li key={item} className="flex items-start gap-2.5 text-sm text-muted/70">
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-sm text-muted/70"
+              >
                 <Check
                   size={14}
                   className="mt-0.5 shrink-0 opacity-50"
@@ -102,14 +249,14 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
 
       {/* Footer CTAs */}
       <div className="mt-8 flex flex-col gap-3 border-t border-white/6 pt-6">
-        <Link
-          href={`${ROUTES.contact}?role=${encodeURIComponent(job.title)}`}
-          onClick={onClose}
-          className="flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
+        <button
+          type="button"
+          onClick={() => setView("apply")}
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-bg-primary transition-all hover:brightness-110"
           style={{ background: accent, boxShadow: `0 0 20px ${accent}40` }}
         >
           Apply for this role <ArrowRight size={14} aria-hidden />
-        </Link>
+        </button>
         <button
           type="button"
           onClick={onClose}
@@ -119,31 +266,37 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
         </button>
       </div>
     </>
-  )
+  );
 }
 
 // ── Main client component ─────────────────────────────────────────────────────
 
-export default function CareersClient() {
-  const [activeTab, setActiveTab] = useState<TabValue>('All')
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null)
+export default function CareersClient({ jobs }: { jobs: Job[] }) {
+  const [activeTab, setActiveTab] = useState<TabValue>("All");
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const filtered =
-    activeTab === 'All' ? JOBS : JOBS.filter((j) => j.department === activeTab)
+    activeTab === "All" ? jobs : jobs.filter((j) => j.department === activeTab);
 
-  const closeModal = useCallback(() => setSelectedJob(null), [])
+  function tabCount(tab: TabValue): number {
+    return tab === "All"
+      ? jobs.length
+      : jobs.filter((j) => j.department === tab).length;
+  }
+
+  const closeModal = useCallback(() => setSelectedJob(null), []);
 
   // Keyboard + scroll lock when modal is open
   useEffect(() => {
-    if (!selectedJob) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && closeModal()
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
+    if (!selectedJob) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeModal();
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
     return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [selectedJob, closeModal])
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [selectedJob, closeModal]);
 
   return (
     <>
@@ -154,8 +307,9 @@ export default function CareersClient() {
         aria-label="Filter by department"
       >
         {TABS.map((tab) => {
-          const accent = tab === 'All' ? '#00F5FF' : DEPT_ACCENT[tab as Department]
-          const isActive = activeTab === tab
+          const accent =
+            tab === "All" ? "#00F5FF" : DEPT_ACCENT[tab as Department];
+          const isActive = activeTab === tab;
           return (
             <button
               key={tab}
@@ -164,16 +318,19 @@ export default function CareersClient() {
               aria-selected={isActive}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                'relative flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors',
-                isActive ? 'text-white' : 'text-muted hover:text-white',
+                "relative flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
+                isActive ? "text-white" : "text-muted hover:text-white",
               )}
             >
               {isActive && (
                 <motion.span
                   layoutId="tab-bg"
                   className="absolute inset-0 rounded-lg"
-                  style={{ background: `${accent}18`, border: `1px solid ${accent}30` }}
-                  transition={{ type: 'spring', bounce: 0.2, duration: 0.45 }}
+                  style={{
+                    background: `${accent}18`,
+                    border: `1px solid ${accent}30`,
+                  }}
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
                 />
               )}
               <span className="relative">{tab}</span>
@@ -188,7 +345,7 @@ export default function CareersClient() {
                 {tabCount(tab)}
               </span>
             </button>
-          )
+          );
         })}
       </div>
 
@@ -196,7 +353,7 @@ export default function CareersClient() {
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <AnimatePresence mode="popLayout">
           {filtered.map((job) => {
-            const accent = DEPT_ACCENT[job.department]
+            const accent = DEPT_ACCENT[job.department];
             return (
               <motion.article
                 key={job.id}
@@ -207,7 +364,7 @@ export default function CareersClient() {
                 transition={{ duration: 0.18 }}
                 className="glass-card group flex cursor-pointer flex-col gap-4 p-6 transition-all hover:-translate-y-0.5"
                 onClick={() => setSelectedJob(job)}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedJob(job)}
+                onKeyDown={(e) => e.key === "Enter" && setSelectedJob(job)}
                 tabIndex={0}
                 role="button"
                 aria-label={`View details for ${job.title}`}
@@ -252,7 +409,7 @@ export default function CareersClient() {
                   View role <ArrowRight size={14} aria-hidden />
                 </span>
               </motion.article>
-            )
+            );
           })}
         </AnimatePresence>
       </div>
@@ -267,7 +424,10 @@ export default function CareersClient() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
-            style={{ background: 'rgba(5, 8, 16, 0.85)', backdropFilter: 'blur(8px)' }}
+            style={{
+              background: "rgba(5, 8, 16, 0.85)",
+              backdropFilter: "blur(8px)",
+            }}
             onClick={closeModal}
             aria-label="Close modal"
           >
@@ -289,5 +449,5 @@ export default function CareersClient() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

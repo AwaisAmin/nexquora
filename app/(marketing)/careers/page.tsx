@@ -1,19 +1,21 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import { CULTURE_PILLARS } from '@/lib/data/team'
-import { ROUTES } from '@/lib/routes'
-import { BRAND } from '@/lib/constants'
-import CareersClient from './CareersClient'
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CULTURE_PILLARS } from "@/lib/data/team";
+import { ROUTES } from "@/lib/routes";
+import { BRAND } from "@/lib/constants";
+import { getPublishedJobs } from "@/lib/dal";
+import CareersClient from "./CareersClient";
 
 export const metadata: Metadata = {
   title: `Careers — ${BRAND.name}`,
-  description: 'Join the remote-first team building AI, fintech, and digital products at Nexquora.',
-}
+  description:
+    "Join the remote-first team building AI, fintech, and digital products at Nexquora.",
+};
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  const jobs = await getPublishedJobs();
   return (
     <div className="min-h-screen pt-24">
-
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="grid-bg py-24 text-center">
         <div className="mx-auto max-w-3xl px-6">
@@ -21,8 +23,7 @@ export default function CareersPage() {
             Join the team
           </p>
           <h1 className="mt-4 font-syne text-4xl font-bold text-white sm:text-5xl">
-            Build the future{' '}
-            <span className="gradient-text">with us</span>
+            Build the future <span className="gradient-text">with us</span>
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-muted">
             Remote-first team solving hard problems in AI, fintech, and beyond.
@@ -37,7 +38,9 @@ export default function CareersPage() {
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {CULTURE_PILLARS.map(({ label, desc }) => (
               <div key={label} className="flex flex-col gap-1 text-center">
-                <p className="font-syne text-sm font-bold text-white">{label}</p>
+                <p className="font-syne text-sm font-bold text-white">
+                  {label}
+                </p>
                 <p className="text-xs text-muted">{desc}</p>
               </div>
             ))}
@@ -50,7 +53,7 @@ export default function CareersPage() {
         <h2 className="mb-8 font-syne text-2xl font-bold text-white">
           Open roles
         </h2>
-        <CareersClient />
+        <CareersClient jobs={jobs} />
       </section>
 
       {/* ── Bottom CTA ────────────────────────────────────────────────────── */}
@@ -71,5 +74,5 @@ export default function CareersPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

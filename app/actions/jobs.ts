@@ -69,6 +69,8 @@ export async function createJob(
 
   revalidatePath("/admin/jobs");
   revalidatePath("/admin");
+  revalidatePath("/careers");
+  revalidatePath("/");
   redirect("/admin/jobs");
 }
 
@@ -110,6 +112,8 @@ export async function updateJob(
 
   revalidatePath("/admin/jobs");
   revalidatePath("/admin");
+  revalidatePath("/careers");
+  revalidatePath("/");
   redirect("/admin/jobs");
 }
 
@@ -118,6 +122,8 @@ export async function deleteJob(id: string) {
   await db.job.delete({ where: { id } });
   revalidatePath("/admin/jobs");
   revalidatePath("/admin");
+  revalidatePath("/careers");
+  revalidatePath("/");
 }
 
 export async function toggleJobPublished(id: string, published: boolean) {
@@ -125,4 +131,6 @@ export async function toggleJobPublished(id: string, published: boolean) {
   await db.job.update({ where: { id }, data: { published } });
   revalidatePath("/admin/jobs");
   revalidatePath("/admin");
+  revalidatePath("/careers");
+  revalidatePath("/");
 }
