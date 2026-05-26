@@ -1,7 +1,8 @@
 "use client";
 import { useTransition } from "react";
 import { markContactRead, deleteContact } from "@/app/actions/admin";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye } from "lucide-react";
+import DeleteButton from "@/components/admin/DeleteButton";
 
 export function MarkReadBtn({ id }: { id: string }) {
   const [pending, start] = useTransition();
@@ -18,17 +19,10 @@ export function MarkReadBtn({ id }: { id: string }) {
 }
 
 export function DeleteContactBtn({ id }: { id: string }) {
-  const [pending, start] = useTransition();
   return (
-    <button
-      onClick={() => {
-        if (confirm("Delete this contact?")) start(() => deleteContact(id));
-      }}
-      disabled={pending}
-      title="Delete"
-      className="cursor-pointer rounded p-1.5 text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
-    >
-      <Trash2 size={15} />
-    </button>
+    <DeleteButton
+      label="this contact"
+      onDelete={() => deleteContact(id)}
+    />
   );
 }

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 const MotionLink = motion.create(Link);
 
-export type ButtonVariant = "primary" | "outline" | "ghost" | "gold";
+export type ButtonVariant = "primary" | "outline" | "ghost" | "gold" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -33,6 +33,12 @@ const variantClasses: Record<ButtonVariant, string> = {
     "bg-gold text-bg-primary font-semibold",
     "shadow-[0_0_24px_rgba(255,184,0,0.3)]",
     "hover:shadow-[0_0_36px_rgba(255,184,0,0.5)] hover:brightness-110",
+    "transition-all duration-200",
+  ].join(" "),
+  danger: [
+    "bg-red-500 text-white font-semibold",
+    "shadow-[0_0_20px_rgba(239,68,68,0.25)]",
+    "hover:bg-red-600 hover:shadow-[0_0_28px_rgba(239,68,68,0.4)]",
     "transition-all duration-200",
   ].join(" "),
 };
