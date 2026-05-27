@@ -7,7 +7,7 @@ export const ROUTES = {
   about:   '/about',
   careers: '/careers',
   contact: '/contact',
-  work:    '/#work',
+  work:    '/work',
 
   services: {
     root:    '/services',
