@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { markContactRead, deleteContact } from "@/app/actions/admin";
 import { Eye } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
+import ReplyContactBtn from "./ReplyContactBtn";
 
 export function MarkReadBtn({ id }: { id: string }) {
   const [pending, start] = useTransition();
@@ -20,9 +21,8 @@ export function MarkReadBtn({ id }: { id: string }) {
 
 export function DeleteContactBtn({ id }: { id: string }) {
   return (
-    <DeleteButton
-      label="this contact"
-      onDelete={() => deleteContact(id)}
-    />
+    <DeleteButton label="this contact" onDelete={() => deleteContact(id)} />
   );
 }
+
+export { ReplyContactBtn };

@@ -15,8 +15,10 @@ model Contact {
   budget    String?
   message   String
   role      String?
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
+  read      Boolean   @default(false)
+  replied   Boolean   @default(false)
+  repliedAt DateTime? @map("replied_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
   @@map("contacts")
 }

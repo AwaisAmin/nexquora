@@ -37,15 +37,14 @@ export async function POST(req: Request) {
     },
   });
 
-  // 2. Send emails in parallel
-  await Promise.all([
-    // Admin notification
+  // 2. Send emails — failures are logged but don't block the success response
+  const [adminResult, userResult] = await Promise.all([
     sendEmail({
       to: ADMIN,
       subject: `New contact from ${data.name} — ${data.service}`,
       template: createElement(ContactNotification, data),
+      replyTo: data.email,
     }),
-    // User confirmation
     sendEmail({
       to: data.email,
       subject: "We received your message — Nexquora",
@@ -55,6 +54,13 @@ export async function POST(req: Request) {
       }),
     }),
   ]);
+
+  if (adminResult.error) {
+    console.error("[contact] Admin notification failed:", adminResult.error);
+  }
+  if (userResult.error) {
+    console.error("[contact] User confirmation failed:", userResult.error);
+  }
 
   return NextResponse.json({ ok: true });
 }
