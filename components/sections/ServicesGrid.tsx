@@ -12,7 +12,7 @@ export default async function ServicesGrid() {
     <section id="services" className="mx-auto max-w-7xl px-6 py-24">
       <SectionHeading
         eyebrow="What we build"
-        title="Six specialist practices"
+        title={`${services.length} specialist practice${services.length !== 1 ? "s" : ""}`}
         titleAccent="under one roof"
         subtitle="No more coordinating five agencies to ship a single product. Strategy, engineering, and operations — all in one team."
       />

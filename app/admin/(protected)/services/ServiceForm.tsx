@@ -1,8 +1,9 @@
 "use client";
 import { useActionState } from "react";
 import type { ServiceFormState } from "@/app/actions/services";
-import { Input, Textarea, Select, Checkbox, Button } from "@/components/ui";
-import { SERVICE_ICON_OPTIONS } from "@/lib/data/services";
+import { Input, Textarea, Checkbox, Button } from "@/components/ui";
+import IconPicker from "@/components/admin/IconPicker";
+import ColorPicker from "@/components/admin/ColorPicker";
 
 interface DefaultValues {
   slug?: string;
@@ -39,7 +40,6 @@ export default function ServiceForm({
   return (
     <form action={formAction}>
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
-
         {/* ── Left: primary content ───────────────────────────────────────── */}
         <div className="space-y-5 rounded-xl border border-white/8 bg-bg-card p-6">
           <div className="grid gap-5 sm:grid-cols-2">
@@ -137,31 +137,15 @@ export default function ServiceForm({
 
         {/* ── Right: metadata sidebar ─────────────────────────────────────── */}
         <div className="space-y-5 rounded-xl border border-white/8 bg-bg-card p-5">
-          <Select
+          <IconPicker
             name="icon"
-            label="Icon"
-            required
             defaultValue={defaultValues.icon ?? ""}
             error={state?.errors?.icon?.[0]}
-          >
-            <option value="" disabled>
-              Select an icon…
-            </option>
-            {SERVICE_ICON_OPTIONS.map((icon) => (
-              <option key={icon} value={icon}>
-                {icon}
-              </option>
-            ))}
-          </Select>
+          />
 
-          <Input
+          <ColorPicker
             name="accentHex"
-            type="text"
-            label="Accent Color"
-            hint="Hex e.g. #00F5FF"
-            required
-            defaultValue={defaultValues.accentHex}
-            placeholder="#00F5FF"
+            defaultValue={defaultValues.accentHex ?? "#00F5FF"}
             error={state?.errors?.accentHex?.[0]}
           />
 
@@ -195,15 +179,22 @@ export default function ServiceForm({
           )}
 
           <div className="flex flex-col gap-2 pt-1">
-            <Button type="submit" loading={pending} className="w-full justify-center">
+            <Button
+              type="submit"
+              loading={pending}
+              className="w-full justify-center"
+            >
               {submitLabel}
             </Button>
-            <Button href="/admin/services" variant="outline" className="w-full justify-center">
+            <Button
+              href="/admin/services"
+              variant="outline"
+              className="w-full justify-center"
+            >
               Cancel
             </Button>
           </div>
         </div>
-
       </div>
     </form>
   );
